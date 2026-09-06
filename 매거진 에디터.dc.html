@@ -381,14 +381,14 @@
               </div>
 
               <sc-if value="{{ s.div.showRule }}" hint-placeholder-val="{{ false }}">
-                <div style="width: 34px; height: 3px; background: {{ c.point }}; margin-bottom: 16px"></div>
+                <div style="width: 34px; height: 3px; background: {{ lineColor }}; margin-bottom: 16px"></div>
               </sc-if>
               <div style="margin-bottom: 18px">
                 <sc-if value="{{ numOn }}" hint-placeholder-val="{{ true }}">
                   <span style="display: inline-block; border: 1px solid {{ c.num }}; border-radius: 999px; padding: 4px 14px; margin-bottom: 12px; font-size: 12px; font-weight: 700; line-height: 1.4; background: {{ numBadgeBg }}; color: {{ numBadgeFg }}; font-variant-numeric: tabular-nums">{{ s.num }}</span>
                 </sc-if>
                 <sc-if value="{{ s.subheadEditing }}" hint-placeholder-val="{{ false }}">
-                  <input class="mz-edit-area" data-edit-key="{{ s.rtSubhead }}" value="{{ editValue }}" onChange="{{ onEditValueChange }}" onBlur="{{ commitEdit }}" onKeyDown="{{ onInputEnter }}" style="font-size: 19px; font-weight: 700; line-height: 1.5; letter-spacing: -0.01em; color: {{ c.point }}">
+                  <input class="mz-edit-area" data-edit-key="{{ s.rtSubhead }}" value="{{ editValue }}" onChange="{{ onEditValueChange }}" onBlur="{{ commitEdit }}" onKeyDown="{{ onInputEnter }}" style="font-size: 19px; font-weight: 700; line-height: 1.5; letter-spacing: -0.01em; color: {{ subheadColor }}">
                   <div data-edit-toolbar="1" style="display: flex; gap: 6px; margin-top: 4px">
                     <button onMouseDown="{{ applyPointToEdit }}" style="border: 1px solid #dcd9d3; background: #fff; color: #46433d; font: inherit; font-size: 11px; font-weight: 600; padding: 3px 8px; cursor: pointer">포인트 강조</button>
                     <button onMouseDown="{{ clearPointFromEdit }}" style="border: 1px solid #dcd9d3; background: #fff; color: #99948b; font: inherit; font-size: 11px; padding: 3px 8px; cursor: pointer">강조 지우기</button>
@@ -397,7 +397,7 @@
                   </div>
                 </sc-if>
                 <sc-if value="{{ s.subheadDisplay }}" hint-placeholder-val="{{ true }}">
-                  <div class="mz-edit" onClick="{{ s.startSubheadEdit }}" data-rt="{{ s.rtSubhead }}" data-html="{{ s.subheadHtml }}" style="font-size: 19px; font-weight: 700; line-height: 1.5; letter-spacing: -0.01em; color: {{ c.point }}; text-wrap: pretty"></div>
+                  <div class="mz-edit" onClick="{{ s.startSubheadEdit }}" data-rt="{{ s.rtSubhead }}" data-html="{{ s.subheadHtml }}" style="font-size: 19px; font-weight: 700; line-height: 1.5; letter-spacing: -0.01em; color: {{ subheadColor }}; text-wrap: pretty"></div>
                 </sc-if>
               </div>
 
@@ -935,11 +935,11 @@ const DIVIDERS = {
   },
   "구분선": {
     mark: { h: 0, border: "1px solid #b0aba2", bg: "transparent" },
-    style: function (t) { return { gap: 50, border: "1px solid " + t.num, bg: "transparent", padTop: 32, padX: 0, padBottom: 0, showRule: false, radius: 0 }; }
+    style: function (t) { return { gap: 50, border: "1px solid " + (t.line || t.num), bg: "transparent", padTop: 32, padX: 0, padBottom: 0, showRule: false, radius: 0 }; }
   },
   "점선": {
     mark: { h: 0, border: "1px dashed #b0aba2", bg: "transparent" },
-    style: function (t) { return { gap: 50, border: "1px dashed " + t.num, bg: "transparent", padTop: 32, padX: 0, padBottom: 0, showRule: false, radius: 0 }; }
+    style: function (t) { return { gap: 50, border: "1px dashed " + (t.line || t.num), bg: "transparent", padTop: 32, padX: 0, padBottom: 0, showRule: false, radius: 0 }; }
   },
   "짧은 강조선": {
     mark: { h: 3, border: "none", bg: "#26241f" },
@@ -1877,7 +1877,7 @@ JSON 앞뒤에 설명, 인사말, 마크다운, 코드블록 또는 다른 텍�
     p.push(".ttl{font-size:26px;font-weight:700;line-height:1.4;letter-spacing:-.02em;color:" + (t.title || t.point) + ";margin:0 0 22px}");
     p.push(".body{font-size:15px;font-weight:400;line-height:1.8;color:" + t.text + "}");
     p.push(".num{display:inline-block;border:1px solid " + t.num + ";border-radius:999px;padding:4px 14px;margin-bottom:12px;font-size:12px;font-weight:700;line-height:1.4;color:" + t.num + "}");
-    p.push(".sub{font-size:19px;font-weight:700;line-height:1.5;letter-spacing:-.01em;color:" + t.point + ";margin:0 0 18px}");
+    p.push(".sub{font-size:19px;font-weight:700;line-height:1.5;letter-spacing:-.01em;color:" + (t.subhead || t.point) + ";margin:0 0 18px}");
     p.push(".cap{font-size:13px;line-height:1.6;color:" + t.sub + ";margin-top:8px}");
     p.push(".img{display:block;width:100%;height:auto;margin-top:16px}");
     p.push(".foot{margin-top:36px;padding-top:18px;font-size:12px;line-height:1.75;color:" + t.sub + ";text-align:center}");
@@ -1901,7 +1901,7 @@ JSON 앞뒤에 설명, 인사말, 마크다운, 코드블록 또는 다른 텍�
       const div = (DIVIDERS[divName] || DIVIDERS["여백만"]).style(t);
       if (divName === "배경 블록" && s.dividerColor) div.bg = s.dividerColor;
       p.push('<div class="reveal" style="margin-top:' + div.gap + "px;border-top:" + div.border + ";background:" + div.bg + ";border-radius:" + div.radius + "px;padding:" + div.padTop + "px " + div.padX + "px " + div.padBottom + 'px">');
-      if (div.showRule) p.push('<div style="width:34px;height:3px;background:' + t.point + ';margin-bottom:16px"></div>');
+      if (div.showRule) p.push('<div style="width:34px;height:3px;background:' + (t.line || t.point) + ';margin-bottom:16px"></div>');
       const numHtml = doc.numOn === false ? "" : '<span class="num" style="' + (doc.numFill ? "background:" + t.num + ";color:" + t.bg + ";border-color:" + t.num : "") + '">' + esc((NUM_STYLES[doc.numStyle] || NUM_STYLES["01"])(i)) + "</span>";
       p.push("<div>" + numHtml + '<h2 class="sub">' + stripEmptyMarks(s.subhead || "") + "</h2></div>");
       p.push('<div class="body">' + bodyToHtml(s.body) + "</div>");
@@ -2375,7 +2375,7 @@ JSON 앞뒤에 설명, 인사말, 마크다운, 코드블록 또는 다른 텍�
       };
     });
 
-    const SLOTS = [["bg", "페이지 배경"], ["text", "본문 텍스트"], ["sub", "보조 텍스트"], ["point", "포인트 컬러"], ["title", "대제목 컬러"], ["num", "중제목 번호"], ["btn", "버튼 컬러"]];
+    const SLOTS = [["bg", "페이지 배경"], ["text", "본문 텍스트"], ["sub", "보조 텍스트"], ["point", "포인트 컬러"], ["title", "대제목 컬러"], ["subhead", "소제목 컬러"], ["num", "중제목 번호"], ["line", "문단 구분 라인 컬러"], ["btn", "버튼 컬러"]];
     const slots = SLOTS.map(function (pair) {
       return {
         label: pair[1], value: t[pair[0]] || t.point,
@@ -2467,6 +2467,8 @@ JSON 앞뒤에 설명, 인사말, 마크다운, 코드블록 또는 다른 텍�
 
       c: t,
       titleColor: t.title || t.point,
+      subheadColor: t.subhead || t.point,
+      lineColor: t.line || t.point,
       docBadge: doc.badge || "나인톡",
       docCategory: doc.category || "헬스",
       outro: OUTROS[doc.outroStyle || "구분선"](t),
