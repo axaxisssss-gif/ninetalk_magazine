@@ -2076,7 +2076,17 @@ JSON 앞뒤에 설명, 인사말, 마크다운, 코드블록 또는 다른 텍�
      stored string. Sidesteps contentEditable entirely — no rich-text paint
      pass, no execCommand, so Enter/Shift+Enter are just native textarea
      behavior and always work regardless of host quirks. */
-  startEdit = (key, value) => { this.setState({ editKey: key, editValue: value, emph: null }); };
+  /* a text-selection drag ending on the same element it started on still
+     fires a native "click" right after mouseup -- without this guard, that
+     click always won the race and swapped the display div for a textarea
+     immediately, wiping the just-made selection and the formatting popover
+     before either was ever visible. Only treat it as "click to edit" when
+     nothing is actually selected. */
+  startEdit = (key, value) => {
+    const sel = window.getSelection();
+    if (sel && !sel.isCollapsed && String(sel).trim()) return;
+    this.setState({ editKey: key, editValue: value, emph: null });
+  };
   onEditValueChange = (e) => { this.setState({ editValue: e.target.value }); };
   /* plain <textarea> Enter and Shift+Enter both just insert a single "\n" —
      there's no native distinction like contentEditable has. Splice the
