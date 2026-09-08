@@ -133,44 +133,35 @@
           <textarea value="{{ topic }}" onChange="{{ setTopic }}" rows="2" placeholder="예: 2026년 가족 간 증여, 얼마까지 세금 없이 줄 수 있나" style="width: 100%; box-sizing: border-box; resize: vertical; font: inherit; font-size: 14px; line-height: 1.6; padding: 11px 12px; border: 1px solid #dcd9d3; background: #fcfbfa; color: #26241f"></textarea>
 
           <div style="display: flex; align-items: baseline; justify-content: space-between; margin: 24px 0 8px">
-            <label style="font-size: 13px; font-weight: 600">참고 링크</label>
-            <span style="font-size: 11px; color: #b0aba2; font-family: ui-monospace, monospace">선택 · 최대 5개</span>
+            <label style="font-size: 13px; font-weight: 600">참고자료</label>
+            <span style="font-size: 11px; color: #b0aba2; font-family: ui-monospace, monospace">선택</span>
           </div>
-          <div style="display: flex; flex-direction: column; gap: 8px">
-            <sc-for list="{{ links }}" as="l" hint-placeholder-count="2">
-              <div style="display: flex; gap: 8px">
-                <input value="{{ l.value }}" onChange="{{ l.onChange }}" placeholder="https://" style="flex: 1; min-width: 0; font: inherit; font-size: 13px; padding: 9px 11px; border: 1px solid #dcd9d3; background: #fcfbfa; color: #26241f; font-family: ui-monospace, monospace">
-                <button onClick="{{ l.onRemove }}" title="삭제" style="flex: none; width: 34px; border: 1px solid #dcd9d3; background: #fff; color: #99948b; font: inherit; font-size: 14px; cursor: pointer">✕</button>
-              </div>
-            </sc-for>
+          <div style="display: flex; gap: 6px">
+            <button onClick="{{ setHasRefOff }}" style="flex: 1; border: 1px solid {{ hasRefOffBorder }}; background: {{ hasRefOffBg }}; color: {{ hasRefOffFg }}; font: inherit; font-size: 13px; font-weight: 600; padding: 9px 0; cursor: pointer">없음</button>
+            <button onClick="{{ setHasRefOn }}" style="flex: 1; border: 1px solid {{ hasRefOnBorder }}; background: {{ hasRefOnBg }}; color: {{ hasRefOnFg }}; font: inherit; font-size: 13px; font-weight: 600; padding: 9px 0; cursor: pointer">있음</button>
           </div>
-          <button onClick="{{ addLink }}" style="margin-top: 10px; border: 1px dashed #cfcbc3; background: none; color: #7d7972; font: inherit; font-size: 12px; font-weight: 600; padding: 8px 12px; cursor: pointer">＋ 링크 추가</button>
 
-          <div style="display: flex; align-items: baseline; justify-content: space-between; margin: 24px 0 8px">
-            <label style="font-size: 13px; font-weight: 600">참고 이미지</label>
-            <span style="font-size: 11px; color: #b0aba2; font-family: ui-monospace, monospace">선택 · 최대 8개</span>
-          </div>
-          <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px">
-            <sc-for list="{{ refImages }}" as="r" hint-placeholder-count="0">
-              <div style="position: relative; aspect-ratio: 1; border: 1px solid #dcd9d3; background: #f4f2ef; overflow: hidden">
-                <sc-if value="{{ r.src }}" hint-placeholder-val="{{ false }}">
-                  <img data-src="{{ r.src }}" alt="" style="width: 100%; height: 100%; object-fit: cover; display: block">
-                </sc-if>
-                <button onClick="{{ r.onRemove }}" title="삭제" style="position: absolute; top: 4px; right: 4px; width: 20px; height: 20px; border: none; background: rgba(0,0,0,.6); color: #fff; font: inherit; font-size: 11px; line-height: 1; cursor: pointer">✕</button>
-              </div>
-            </sc-for>
-            <div onClick="{{ pickRefImages }}" onDragOver="{{ allowDrop }}" onDrop="{{ onRefDrop }}" style="aspect-ratio: 1; border: 1px dashed #cfcbc3; background: repeating-linear-gradient(135deg, rgba(0,0,0,.022) 0 6px, transparent 6px 12px); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; cursor: pointer">
-              <span style="font-size: 15px; color: #a8a39a; line-height: 1">＋</span>
-              <span style="font-size: 10px; color: #a8a39a; font-family: ui-monospace, monospace">이미지</span>
+          <sc-if value="{{ hasRef }}" hint-placeholder-val="{{ false }}">
+            <div style="display: flex; align-items: baseline; justify-content: space-between; margin: 20px 0 8px">
+              <label style="font-size: 13px; font-weight: 600">참고 링크</label>
+              <span style="font-size: 11px; color: #b0aba2; font-family: ui-monospace, monospace">선택 · 최대 5개</span>
             </div>
-          </div>
-          <div style="font-size: 11px; line-height: 1.7; color: #b0aba2; margin-top: 8px">올린 이미지는 문단 이미지 후보로 에디터에 함께 넘어갑니다.</div>
+            <div style="display: flex; flex-direction: column; gap: 8px">
+              <sc-for list="{{ links }}" as="l" hint-placeholder-count="2">
+                <div style="display: flex; gap: 8px">
+                  <input value="{{ l.value }}" onChange="{{ l.onChange }}" placeholder="https://" style="flex: 1; min-width: 0; font: inherit; font-size: 13px; padding: 9px 11px; border: 1px solid #dcd9d3; background: #fcfbfa; color: #26241f; font-family: ui-monospace, monospace">
+                  <button onClick="{{ l.onRemove }}" title="삭제" style="flex: none; width: 34px; border: 1px solid #dcd9d3; background: #fff; color: #99948b; font: inherit; font-size: 14px; cursor: pointer">✕</button>
+                </div>
+              </sc-for>
+            </div>
+            <button onClick="{{ addLink }}" style="margin-top: 10px; border: 1px dashed #cfcbc3; background: none; color: #7d7972; font: inherit; font-size: 12px; font-weight: 600; padding: 8px 12px; cursor: pointer">＋ 링크 추가</button>
 
-          <div style="display: flex; align-items: baseline; justify-content: space-between; margin: 24px 0 8px">
-            <label style="font-size: 13px; font-weight: 600">참고 텍스트</label>
-            <span style="font-size: 11px; color: #b0aba2; font-family: ui-monospace, monospace">선택 · {{ refTextLen }}자</span>
-          </div>
-          <textarea value="{{ refText }}" onChange="{{ setRefText }}" rows="5" placeholder="기존 발행본, 보도자료, 사내 자료 등 초안에 반영할 원문을 붙여넣으세요" style="width: 100%; box-sizing: border-box; resize: vertical; font: inherit; font-size: 13px; line-height: 1.7; padding: 11px 12px; border: 1px solid #dcd9d3; background: #fcfbfa; color: #26241f"></textarea>
+            <div style="display: flex; align-items: baseline; justify-content: space-between; margin: 20px 0 8px">
+              <label style="font-size: 13px; font-weight: 600">참고 텍스트</label>
+              <span style="font-size: 11px; color: #b0aba2; font-family: ui-monospace, monospace">선택 · {{ refTextLen }}자</span>
+            </div>
+            <textarea value="{{ refText }}" onChange="{{ setRefText }}" rows="5" placeholder="기존 발행본, 보도자료, 사내 자료 등 초안에 반영할 원문을 붙여넣으세요" style="width: 100%; box-sizing: border-box; resize: vertical; font: inherit; font-size: 13px; line-height: 1.7; padding: 11px 12px; border: 1px solid #dcd9d3; background: #fcfbfa; color: #26241f"></textarea>
+          </sc-if>
 
           <div style="margin: 24px 0 8px"><label style="font-size: 13px; font-weight: 600">추가 지시</label> <span style="font-size: 11px; color: #b0aba2; font-family: ui-monospace, monospace">선택</span></div>
           <textarea value="{{ instr }}" onChange="{{ setInstr }}" rows="2" placeholder="톤, 강조할 관점 등" style="width: 100%; box-sizing: border-box; resize: vertical; font: inherit; font-size: 14px; line-height: 1.6; padding: 11px 12px; border: 1px solid #dcd9d3; background: #fcfbfa; color: #26241f"></textarea>
@@ -265,6 +256,7 @@
       <div style="width: 1px; height: 18px; background: #e6e3de"></div>
       <div style="font-size: 12px; color: #99948b; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 320px">{{ docTitle }}</div>
       <div style="flex: 1"></div>
+      <button onClick="{{ undo }}" disabled="{{ undoDisabled }}" title="되돌리기" style="border: 1px solid #dcd9d3; background: #fff; color: {{ undoColor }}; font: inherit; font-size: 12px; font-weight: 600; padding: 7px 12px; cursor: {{ undoCursor }}">↺ 되돌리기</button>
       <div style="display: flex; align-items: center; gap: 6px; font-size: 12px; color: {{ saveColor }}; font-family: ui-monospace, monospace">
         <span style="width: 6px; height: 6px; border-radius: 50%; background: {{ saveColor }}"></span>{{ saveLabel }}
       </div>
@@ -351,12 +343,7 @@
 
           <sc-if value="{{ titleEditing }}" hint-placeholder-val="{{ false }}">
             <input class="mz-edit-area" data-edit-key="title" value="{{ editValue }}" onChange="{{ onEditValueChange }}" onBlur="{{ commitEdit }}" onKeyDown="{{ onInputEnter }}" style="font-size: 26px; font-weight: 700; line-height: 1.4; letter-spacing: -0.02em; color: {{ titleColor }}">
-            <div data-edit-toolbar="1" style="display: flex; gap: 6px; margin: 4px 0 22px">
-              <button onMouseDown="{{ applyPointToEdit }}" style="border: 1px solid #dcd9d3; background: #fff; color: #46433d; font: inherit; font-size: 11px; font-weight: 600; padding: 3px 8px; cursor: pointer">포인트 강조</button>
-              <button onMouseDown="{{ clearPointFromEdit }}" style="border: 1px solid #dcd9d3; background: #fff; color: #99948b; font: inherit; font-size: 11px; padding: 3px 8px; cursor: pointer">강조 지우기</button>
-              <input type="number" min="8" max="72" placeholder="pt" data-fontsize-input="1" onMouseDown="{{ stopEdit }}" style="width: 42px; border: 1px solid #dcd9d3; background: #fff; font: inherit; font-size: 11px; padding: 3px 4px">
-              <button onMouseDown="{{ applyFontSizeToEdit }}" style="border: 1px solid #dcd9d3; background: #fff; color: #46433d; font: inherit; font-size: 11px; font-weight: 600; padding: 3px 8px; cursor: pointer">크기 적용</button>
-            </div>
+            <div style="font-size: 11px; color: #a8a39a; margin: 4px 0 22px">굵게·색상·크기는 텍스트를 선택하면 나타나는 도구모음에서 바로 적용하세요</div>
           </sc-if>
           <sc-if value="{{ titleDisplay }}" hint-placeholder-val="{{ true }}">
             <div class="mz-edit" onClick="{{ startTitleEdit }}" data-rt="title" data-html="{{ titleHtml }}" style="font-size: 26px; font-weight: 700; line-height: 1.4; letter-spacing: -0.02em; color: {{ titleColor }}; margin-bottom: 22px; text-wrap: pretty"></div>
@@ -364,12 +351,7 @@
 
           <sc-if value="{{ introEditing }}" hint-placeholder-val="{{ false }}">
             <textarea class="mz-edit-area" data-edit-key="intro" value="{{ editValue }}" onChange="{{ onEditValueChange }}" onBlur="{{ commitEdit }}" onKeyDown="{{ onTextareaEnter }}" rows="4" style="font-size: 15px; line-height: 1.8; color: {{ c.text }}"></textarea>
-            <div data-edit-toolbar="1" style="display: flex; gap: 6px; margin-top: 4px">
-              <button onMouseDown="{{ applyPointToEdit }}" style="border: 1px solid #dcd9d3; background: #fff; color: #46433d; font: inherit; font-size: 11px; font-weight: 600; padding: 3px 8px; cursor: pointer">포인트 강조</button>
-              <button onMouseDown="{{ clearPointFromEdit }}" style="border: 1px solid #dcd9d3; background: #fff; color: #99948b; font: inherit; font-size: 11px; padding: 3px 8px; cursor: pointer">강조 지우기</button>
-              <input type="number" min="8" max="72" placeholder="pt" data-fontsize-input="1" onMouseDown="{{ stopEdit }}" style="width: 42px; border: 1px solid #dcd9d3; background: #fff; font: inherit; font-size: 11px; padding: 3px 4px">
-              <button onMouseDown="{{ applyFontSizeToEdit }}" style="border: 1px solid #dcd9d3; background: #fff; color: #46433d; font: inherit; font-size: 11px; font-weight: 600; padding: 3px 8px; cursor: pointer">크기 적용</button>
-            </div>
+            <div style="font-size: 11px; color: #a8a39a; margin-top: 4px">굵게·색상·크기는 텍스트를 선택하면 나타나는 도구모음에서 바로 적용하세요</div>
           </sc-if>
           <sc-if value="{{ introDisplay }}" hint-placeholder-val="{{ true }}">
             <div class="mz-edit" onClick="{{ startIntroEdit }}" data-rt="intro" data-html="{{ introHtml }}" style="font-size: 15px; font-weight: 400; line-height: 1.8; color: {{ c.text }}; text-wrap: pretty"></div>
@@ -397,12 +379,7 @@
                 </sc-if>
                 <sc-if value="{{ s.subheadEditing }}" hint-placeholder-val="{{ false }}">
                   <input class="mz-edit-area" data-edit-key="{{ s.rtSubhead }}" value="{{ editValue }}" onChange="{{ onEditValueChange }}" onBlur="{{ commitEdit }}" onKeyDown="{{ onInputEnter }}" style="font-size: 19px; font-weight: 700; line-height: 1.5; letter-spacing: -0.01em; color: {{ subheadColor }}">
-                  <div data-edit-toolbar="1" style="display: flex; gap: 6px; margin-top: 4px">
-                    <button onMouseDown="{{ applyPointToEdit }}" style="border: 1px solid #dcd9d3; background: #fff; color: #46433d; font: inherit; font-size: 11px; font-weight: 600; padding: 3px 8px; cursor: pointer">포인트 강조</button>
-                    <button onMouseDown="{{ clearPointFromEdit }}" style="border: 1px solid #dcd9d3; background: #fff; color: #99948b; font: inherit; font-size: 11px; padding: 3px 8px; cursor: pointer">강조 지우기</button>
-                    <input type="number" min="8" max="72" placeholder="pt" data-fontsize-input="1" onMouseDown="{{ stopEdit }}" style="width: 42px; border: 1px solid #dcd9d3; background: #fff; font: inherit; font-size: 11px; padding: 3px 4px">
-                    <button onMouseDown="{{ applyFontSizeToEdit }}" style="border: 1px solid #dcd9d3; background: #fff; color: #46433d; font: inherit; font-size: 11px; font-weight: 600; padding: 3px 8px; cursor: pointer">크기 적용</button>
-                  </div>
+                  <div style="font-size: 11px; color: #a8a39a; margin-top: 4px">굵게·색상·크기는 텍스트를 선택하면 나타나는 도구모음에서 바로 적용하세요</div>
                 </sc-if>
                 <sc-if value="{{ s.subheadDisplay }}" hint-placeholder-val="{{ true }}">
                   <div class="mz-edit" onClick="{{ s.startSubheadEdit }}" data-rt="{{ s.rtSubhead }}" data-html="{{ s.subheadHtml }}" style="font-size: 19px; font-weight: 700; line-height: 1.5; letter-spacing: -0.01em; color: {{ subheadColor }}; text-wrap: pretty"></div>
@@ -411,12 +388,7 @@
 
               <sc-if value="{{ s.bodyEditing }}" hint-placeholder-val="{{ false }}">
                 <textarea class="mz-edit-area" data-edit-key="{{ s.rtBody }}" value="{{ editValue }}" onChange="{{ onEditValueChange }}" onBlur="{{ commitEdit }}" onKeyDown="{{ onTextareaEnter }}" rows="6" style="font-size: 15px; line-height: 1.8; color: {{ c.text }}"></textarea>
-                <div data-edit-toolbar="1" style="display: flex; gap: 6px; margin-top: 4px">
-                  <button onMouseDown="{{ applyPointToEdit }}" style="border: 1px solid #dcd9d3; background: #fff; color: #46433d; font: inherit; font-size: 11px; font-weight: 600; padding: 3px 8px; cursor: pointer">포인트 강조</button>
-                  <button onMouseDown="{{ clearPointFromEdit }}" style="border: 1px solid #dcd9d3; background: #fff; color: #99948b; font: inherit; font-size: 11px; padding: 3px 8px; cursor: pointer">강조 지우기</button>
-                  <input type="number" min="8" max="72" placeholder="pt" data-fontsize-input="1" onMouseDown="{{ stopEdit }}" style="width: 42px; border: 1px solid #dcd9d3; background: #fff; font: inherit; font-size: 11px; padding: 3px 4px">
-                  <button onMouseDown="{{ applyFontSizeToEdit }}" style="border: 1px solid #dcd9d3; background: #fff; color: #46433d; font: inherit; font-size: 11px; font-weight: 600; padding: 3px 8px; cursor: pointer">크기 적용</button>
-                </div>
+                <div style="font-size: 11px; color: #a8a39a; margin-top: 4px">굵게·색상·크기는 텍스트를 선택하면 나타나는 도구모음에서 바로 적용하세요</div>
               </sc-if>
               <sc-if value="{{ s.bodyDisplay }}" hint-placeholder-val="{{ true }}">
                 <div class="mz-edit" onClick="{{ s.startBodyEdit }}" data-rt="{{ s.rtBody }}" data-body-idx="{{ s.idx }}" data-html="{{ s.bodyHtml2 }}" style="font-size: 15px; font-weight: 400; line-height: 1.8; color: {{ c.text }}; text-wrap: pretty"></div>
@@ -462,8 +434,31 @@
                   </div>
                 </sc-if>
                 <sc-if value="{{ s.hasImage }}" hint-placeholder-val="{{ false }}">
-                  
+
                 </sc-if>
+
+                <div style="margin-top: 16px; display: flex; flex-direction: column; gap: 16px">
+                  <sc-for list="{{ s.extraImages }}" as="ei" hint-placeholder-count="0">
+                    <div style="position: relative">
+                      <sc-if value="{{ ei.isVideo }}" hint-placeholder-val="{{ false }}">
+                        <video data-src="{{ ei.src }}" autoplay muted loop playsinline style="width: 100%; height: auto; display: block"></video>
+                      </sc-if>
+                      <sc-if value="{{ ei.isImage }}" hint-placeholder-val="{{ true }}">
+                        <img data-src="{{ ei.src }}" alt="" style="width: 100%; height: auto; display: block">
+                      </sc-if>
+                      <div style="position: absolute; right: 8px; bottom: 8px; display: flex; gap: 6px">
+                        <button onClick="{{ ei.onMoveUp }}" disabled="{{ !ei.canMoveUp }}" style="border: none; background: rgba(255,255,255,.92); color: #26241f; font: inherit; font-size: 10px; font-weight: 700; padding: 5px 8px; cursor: pointer; opacity: {{ ei.moveUpOpacity }}">▲</button>
+                        <button onClick="{{ ei.onMoveDown }}" disabled="{{ !ei.canMoveDown }}" style="border: none; background: rgba(255,255,255,.92); color: #26241f; font: inherit; font-size: 10px; font-weight: 700; padding: 5px 8px; cursor: pointer; opacity: {{ ei.moveDownOpacity }}">▼</button>
+                        <button onClick="{{ ei.onRemove }}" style="border: none; background: rgba(180,84,74,.92); color: #fff; font: inherit; font-size: 10px; font-weight: 700; padding: 5px 8px; cursor: pointer">삭제</button>
+                      </div>
+                    </div>
+                  </sc-for>
+                  <sc-if value="{{ s.canAddExtraImage }}" hint-placeholder-val="{{ true }}">
+                    <div onClick="{{ s.onAddExtraImage }}" onDragOver="{{ allowDrop }}" onDrop="{{ s.onAddExtraImageDrop }}" style="border: 1px dashed #c9c5bd; background: repeating-linear-gradient(135deg, rgba(0,0,0,.022) 0 6px, transparent 6px 12px); padding: 16px; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer">
+                      <span style="font-size: 11px; font-family: ui-monospace, monospace; color: #99948b">＋ 추가 이미지 업로드</span>
+                    </div>
+                  </sc-if>
+                </div>
               </div>
             </div>
           </sc-for>
@@ -471,12 +466,7 @@
           <div style="margin-top: {{ outro.gap }}px; border-top: {{ outro.border }}; background: {{ outro.bg }}; border-radius: {{ outro.radius }}px; padding: {{ outro.padTop }}px {{ outro.padX }}px {{ outro.padBottom }}px">
             <sc-if value="{{ outroEditing }}" hint-placeholder-val="{{ false }}">
               <textarea class="mz-edit-area" data-edit-key="outro" value="{{ editValue }}" onChange="{{ onEditValueChange }}" onBlur="{{ commitEdit }}" onKeyDown="{{ onTextareaEnter }}" rows="4" style="font-size: 15px; line-height: 1.8; color: {{ c.text }}"></textarea>
-              <div data-edit-toolbar="1" style="display: flex; gap: 6px; margin-top: 4px">
-                <button onMouseDown="{{ applyPointToEdit }}" style="border: 1px solid #dcd9d3; background: #fff; color: #46433d; font: inherit; font-size: 11px; font-weight: 600; padding: 3px 8px; cursor: pointer">포인트 강조</button>
-                <button onMouseDown="{{ clearPointFromEdit }}" style="border: 1px solid #dcd9d3; background: #fff; color: #99948b; font: inherit; font-size: 11px; padding: 3px 8px; cursor: pointer">강조 지우기</button>
-                <input type="number" min="8" max="72" placeholder="pt" data-fontsize-input="1" onMouseDown="{{ stopEdit }}" style="width: 42px; border: 1px solid #dcd9d3; background: #fff; font: inherit; font-size: 11px; padding: 3px 4px">
-                <button onMouseDown="{{ applyFontSizeToEdit }}" style="border: 1px solid #dcd9d3; background: #fff; color: #46433d; font: inherit; font-size: 11px; font-weight: 600; padding: 3px 8px; cursor: pointer">크기 적용</button>
-              </div>
+              <div style="font-size: 11px; color: #a8a39a; margin-top: 4px">굵게·색상·크기는 텍스트를 선택하면 나타나는 도구모음에서 바로 적용하세요</div>
             </sc-if>
             <sc-if value="{{ outroDisplay }}" hint-placeholder-val="{{ true }}">
               <div class="mz-edit" onClick="{{ startOutroEdit }}" data-rt="outro" data-html="{{ outroHtml }}" style="font-size: 15px; font-weight: 400; line-height: 1.8; color: {{ c.text }}; text-wrap: pretty"></div>
@@ -584,12 +574,7 @@
           <div style="margin-top: 36px; padding-top: 18px">
             <sc-if value="{{ footerEditing }}" hint-placeholder-val="{{ false }}">
               <textarea class="mz-edit-area" data-edit-key="footer" value="{{ editValue }}" onChange="{{ onEditValueChange }}" onBlur="{{ commitEdit }}" onKeyDown="{{ onTextareaEnter }}" rows="3" style="font-size: 12px; line-height: 1.75; color: {{ c.sub }}; text-align: center"></textarea>
-              <div data-edit-toolbar="1" style="display: flex; gap: 6px; margin-top: 4px">
-                <button onMouseDown="{{ applyPointToEdit }}" style="border: 1px solid #dcd9d3; background: #fff; color: #46433d; font: inherit; font-size: 11px; font-weight: 600; padding: 3px 8px; cursor: pointer">포인트 강조</button>
-                <button onMouseDown="{{ clearPointFromEdit }}" style="border: 1px solid #dcd9d3; background: #fff; color: #99948b; font: inherit; font-size: 11px; padding: 3px 8px; cursor: pointer">강조 지우기</button>
-                <input type="number" min="8" max="72" placeholder="pt" data-fontsize-input="1" onMouseDown="{{ stopEdit }}" style="width: 42px; border: 1px solid #dcd9d3; background: #fff; font: inherit; font-size: 11px; padding: 3px 4px">
-                <button onMouseDown="{{ applyFontSizeToEdit }}" style="border: 1px solid #dcd9d3; background: #fff; color: #46433d; font: inherit; font-size: 11px; font-weight: 600; padding: 3px 8px; cursor: pointer">크기 적용</button>
-              </div>
+              <div style="font-size: 11px; color: #a8a39a; margin-top: 4px">굵게·색상·크기는 텍스트를 선택하면 나타나는 도구모음에서 바로 적용하세요</div>
             </sc-if>
             <sc-if value="{{ footerDisplay }}" hint-placeholder-val="{{ true }}">
               <div class="mz-edit" onClick="{{ startFooterEdit }}" data-rt="footer" data-html="{{ footerHtml }}" style="font-size: 12px; font-weight: 400; line-height: 1.75; color: {{ c.sub }}; text-align: center; text-wrap: pretty"></div>
@@ -667,22 +652,6 @@
             </sc-if>
           </div>
 
-          <sc-if value="{{ hasRefImages }}" hint-placeholder-val="{{ false }}">
-            <div style="padding: 22px 20px 26px; border-bottom: 1px solid #ece9e4">
-              <div style="display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 12px">
-                <div style="font-size: 11px; font-weight: 700; color: #99948b; letter-spacing: .04em">참고 이미지</div>
-                <div style="font-size: 10px; color: #b0aba2; font-family: ui-monospace, monospace">{{ refCount }}개</div>
-              </div>
-              <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px">
-                <sc-for list="{{ refImages }}" as="r" hint-placeholder-count="0">
-                  <sc-if value="{{ r.src }}" hint-placeholder-val="{{ false }}">
-                    <img data-src="{{ r.src }}" alt="" onClick="{{ r.onUse }}" title="빈 이미지 자리에 넣기" style="width: 100%; aspect-ratio: 1; object-fit: cover; display: block; border: 1px solid #e2dfda; border-radius: 3px; cursor: pointer">
-                  </sc-if>
-                </sc-for>
-              </div>
-              <div style="margin-top: 10px; font-size: 11px; line-height: 1.6; color: #b0aba2">클릭하면 비어 있는 첫 이미지 자리에 들어갑니다.</div>
-            </div>
-          </sc-if>
 
           <div style="padding: 22px 20px 26px">
             <div style="font-size: 11px; font-weight: 700; color: #99948b; letter-spacing: .04em; margin-bottom: 14px">요소</div>
@@ -762,7 +731,7 @@
           <span style="font-size: 10px; color: #b9b3a9">pt</span>
         </span>
         <span style="width: 1px; align-self: stretch; background: rgba(255,255,255,.22)"></span>
-        <sc-for list="{{ markColors }}" as="mc" hint-placeholder-count="5">
+        <sc-for list="{{ markColors }}" as="mc" hint-placeholder-count="7">
           <button onClick="{{ mc.onPick }}" title="{{ mc.title }}" style="width: 16px; height: 16px; border: 1px solid rgba(255,255,255,.5); border-radius: 50%; background: {{ mc.color }}; padding: 0; cursor: pointer"></button>
         </sc-for>
         <span style="width: 1px; align-self: stretch; background: rgba(255,255,255,.22)"></span>
@@ -797,9 +766,6 @@
       <div onClick="{{ stop }}" style="width: 100%; max-width: 520px; max-height: 86vh; overflow: auto; background: #fff; border: 1px solid #d3cfc8; padding: 26px 26px 22px">
         <div style="font-size: 16px; font-weight: 700; margin-bottom: 8px">Claude.ai 구독으로 생성하기</div>
         <div style="font-size: 13px; line-height: 1.7; color: #7d7972; margin-bottom: 16px; text-wrap: pretty">별도 API 키 없이 지금 쓰시는 Claude.ai 구독으로 생성합니다. ① 아래 프롬프트를 복사해 Claude.ai 새 대화에 붙여넣고 ② 나온 답변 전체를 복사해 아래 칸에 붙여넣은 뒤 ③ 적용을 누르세요.</div>
-        <sc-if value="{{ hasRefImages }}" hint-placeholder-val="{{ false }}">
-          <div style="margin: -8px 0 16px; padding: 9px 12px; border: 1px solid #e6d3a8; background: #fdf7e8; font-size: 12px; line-height: 1.6; color: #7a6428">참고 이미지를 {{ refCount }}장 넣어두셨네요 — Claude.ai에 프롬프트를 붙여넣을 때, 그 이미지들도 같이 첨부해서 보내야 AI가 실제로 보고 반영합니다.</div>
-        </sc-if>
         <div style="display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 6px">
           <label style="font-size: 12px; font-weight: 700; color: #46433d">① 프롬프트</label>
           <div style="display: flex; gap: 8px">
@@ -955,7 +921,7 @@ const DIVIDERS = {
   },
   "배경 블록": {
     mark: { h: 12, border: "none", bg: "rgba(0,0,0,.09)" },
-    style: function () { return { gap: 42, border: "none", bg: "rgba(127,127,127,.09)", padTop: 24, padX: 18, padBottom: 24, showRule: false, radius: 16 }; }
+    style: function (t) { return { gap: 42, border: "none", bg: t.block || "rgba(127,127,127,.09)", padTop: 24, padX: 18, padBottom: 24, showRule: false, radius: 16 }; }
   }
 };
 const DIVIDER_KEYS = Object.keys(DIVIDERS);
@@ -964,7 +930,7 @@ const OUTROS = {
   "여백": function () { return { gap: 44, border: "none", bg: "transparent", padTop: 0, padX: 0, padBottom: 0, radius: 0 }; },
   "구분선": function (t) { return { gap: 40, border: "1px solid " + (t.line || t.num), bg: "transparent", padTop: 28, padX: 0, padBottom: 0, radius: 0 }; },
   "굵은 선": function (t) { return { gap: 40, border: "3px solid " + (t.line || t.point), bg: "transparent", padTop: 26, padX: 0, padBottom: 0, radius: 0 }; },
-  "블록": function () { return { gap: 40, border: "none", bg: "rgba(127,127,127,.09)", padTop: 22, padX: 18, padBottom: 24, radius: 16 }; }
+  "블록": function (t) { return { gap: 40, border: "none", bg: t.block || "rgba(127,127,127,.09)", padTop: 22, padX: 18, padBottom: 24, radius: 16 }; }
 };
 
 /* footer SNS icons / character art, embedded as base64 so the ZIP export never depends on fetch()/canvas being able to reach assets/*.png at runtime -- that silently fails when this file is opened via file:// (fetch to file:// is blocked, and canvas reads of file:// images can be tainted), which is exactly how this tool is normally opened. */
@@ -1095,14 +1061,26 @@ function imgSlotIds(doc) {
   const ids = [];
   if (doc.thumbnail) ids.push("thumb");
   if (doc.finalImage) ids.push("final");
-  (doc.sections || []).forEach(function (s, i) { if (s.image) ids.push("sec:" + i); });
+  (doc.sections || []).forEach(function (s, i) {
+    if (s.image) ids.push("sec:" + i);
+    (s.images || []).forEach(function (img, j) { if (img) ids.push("sec:" + i + ":x:" + j); });
+  });
   (doc.btns || []).forEach(function (b, i) { if (b.img) ids.push("btn:" + i); });
   return ids;
 }
 function getImgValue(doc, id) {
   if (id === "thumb") return doc.thumbnail;
   if (id === "final") return doc.finalImage;
-  if (id.indexOf("sec:") === 0) { const s = doc.sections[+id.slice(4)]; return s ? s.image : null; }
+  if (id.indexOf("sec:") === 0) {
+    const rest = id.slice(4);
+    if (rest.indexOf(":x:") !== -1) {
+      const parts = rest.split(":x:");
+      const s = doc.sections[+parts[0]];
+      return s && s.images ? s.images[+parts[1]] : null;
+    }
+    const s = doc.sections[+rest];
+    return s ? s.image : null;
+  }
   if (id.indexOf("btn:") === 0) { const b = doc.btns && doc.btns[+id.slice(4)]; return b ? b.img : null; }
   return null;
 }
@@ -1110,7 +1088,10 @@ function stripImages(doc) {
   const copy = JSON.parse(JSON.stringify(doc));
   copy.thumbnail = null;
   copy.finalImage = null;
-  (copy.sections || []).forEach(function (s) { s.image = null; });
+  (copy.sections || []).forEach(function (s) {
+    s.image = null;
+    if (s.images) s.images = s.images.map(function () { return null; });
+  });
   (copy.btns || []).forEach(function (b) { b.img = null; });
   return copy;
 }
@@ -1134,7 +1115,17 @@ function loadImagesInto(doc) {
     if (!val) return;
     if (id === "thumb") doc.thumbnail = val;
     else if (id === "final") doc.finalImage = val;
-    else if (id.indexOf("sec:") === 0) { const s = doc.sections && doc.sections[+id.slice(4)]; if (s) s.image = val; }
+    else if (id.indexOf("sec:") === 0) {
+      const rest = id.slice(4);
+      if (rest.indexOf(":x:") !== -1) {
+        const parts = rest.split(":x:");
+        const s = doc.sections && doc.sections[+parts[0]];
+        if (s) { if (!s.images) s.images = []; s.images[+parts[1]] = val; }
+      } else {
+        const s = doc.sections && doc.sections[+rest];
+        if (s) s.image = val;
+      }
+    }
     else if (id.indexOf("btn:") === 0) { const b = doc.btns && doc.btns[+id.slice(4)]; if (b) b.img = val; }
   });
   return doc;
@@ -1143,10 +1134,10 @@ function loadImagesInto(doc) {
 class Component extends DCLogic {
   state = {
     screen: this.props.startScreen || "input",
-    topic: "2026년 가족 간 증여, 얼마까지 세금 없이 줄 수 있나",
+    topic: "",
     instr: "",
-    links: ["https://www.nts.go.kr", ""],
-    refImages: [],
+    links: [],
+    hasRef: false,
     refText: "",
     count: "자동",
     doc: JSON.parse(JSON.stringify(SAMPLE)),
@@ -1269,56 +1260,6 @@ class Component extends DCLogic {
     }
   };
 
-  /* apply/remove the bold+point-color "강조" mark on the current text-field
-     selection. mousedown+preventDefault (not click) so focus never leaves
-     the textarea/input first — a click would blur it and commitEdit would
-     close edit mode before the mark could be applied. */
-  applyPointToEdit = (e) => {
-    e.preventDefault();
-    const key = this.state.editKey;
-    const el = key && document.querySelector('[data-edit-key="' + key + '"]');
-    if (!el) return;
-    const start = el.selectionStart, end = el.selectionEnd;
-    if (start === end) return;
-    const val = el.value;
-    const wrapped = '<span data-em="1" style="font-weight:700;color:var(--point)">' + val.slice(start, end) + "</span>";
-    const next = val.slice(0, start) + wrapped + val.slice(end);
-    el.value = next;
-    el.focus();
-    try { el.setSelectionRange(start + wrapped.length, start + wrapped.length); } catch (err) {}
-    this.setState({ editValue: next });
-  };
-  /* strips any span this toolbar can add — both the bold+color "강조" mark
-     and font-size overrides — so one button clears whatever is selected. */
-  clearPointFromEdit = (e) => {
-    e.preventDefault();
-    const key = this.state.editKey;
-    const el = key && document.querySelector('[data-edit-key="' + key + '"]');
-    if (!el) return;
-    const next = el.value.replace(/<span[^>]*>([\s\S]*?)<\/span>/gi, "$1");
-    el.value = next;
-    el.focus();
-    this.setState({ editValue: next });
-  };
-  applyFontSizeToEdit = (e) => {
-    e.preventDefault();
-    const key = this.state.editKey;
-    const el = key && document.querySelector('[data-edit-key="' + key + '"]');
-    const ptInput = document.querySelector("[data-fontsize-input]");
-    if (!el || !ptInput) return;
-    const pt = parseInt(ptInput.value, 10);
-    if (!pt || pt < 6 || pt > 96) return;
-    const start = el.selectionStart, end = el.selectionEnd;
-    if (start === end) return;
-    const val = el.value;
-    const wrapped = '<span style="font-size:' + pt + 'pt">' + val.slice(start, end) + "</span>";
-    const next = val.slice(0, start) + wrapped + val.slice(end);
-    el.value = next;
-    el.focus();
-    try { el.setSelectionRange(start + wrapped.length, start + wrapped.length); } catch (err) {}
-    this.setState({ editValue: next });
-  };
-
   componentDidUpdate() {
     this.syncDom();
     this._focusEditArea();
@@ -1363,7 +1304,35 @@ class Component extends DCLogic {
     return copy;
   };
 
+  /* plain instance array, not state -- undo history shouldn't trigger its own
+     render or get written to localStorage. Every persist() call snapshots the
+     state *before* the incoming patch lands, so undo() can pop back to it. */
+  undoStack = [];
+
+  _snapshotForUndo = () => {
+    const st = this.state;
+    try {
+      this.undoStack.push(JSON.stringify({ doc: st.doc, theme: st.theme, presetName: st.presetName, custom: st.custom }));
+      if (this.undoStack.length > 20) this.undoStack.shift();
+    } catch (e) {}
+  };
+
+  undo = () => {
+    if (!this.undoStack.length) return;
+    let snap;
+    try { snap = JSON.parse(this.undoStack.pop()); } catch (e) { return; }
+    /* snap.doc came from in-memory state, so it already has full image data
+       embedded -- unlike a draft loaded from localStorage, it must NOT be
+       run through loadImagesInto (that pulls images back in by section
+       index from *current* storage, which could mismatch if an image slot
+       was added/removed since this snapshot was taken). */
+    this._skipUndoSnapshot = true;
+    this.persist({ doc: snap.doc, theme: snap.theme, presetName: snap.presetName, custom: snap.custom });
+  };
+
   persist = (patch) => {
+    if (this._skipUndoSnapshot) this._skipUndoSnapshot = false;
+    else this._snapshotForUndo();
     this.setState(Object.assign({ saved: false }, patch || {}), () => {
       const doc = this._docForSave();
       let metaFailed = false;
@@ -1436,7 +1405,7 @@ class Component extends DCLogic {
         body: src || (topic
           ? topic + "와 관련해 이 부분에서 다룰 내용입니다. " + (instr ? instr + " " : "") + "참고 자료를 반영해 두세 문장으로 채워주세요."
           : "이 문단에 들어갈 내용을 두세 문장으로 채워주세요."),
-        image: st.refImages[i] || null,
+        image: null,
         imageHint: instr || "이 자리에 들어갈 이미지 설명",
         imgOn: true
       });
@@ -1444,12 +1413,6 @@ class Component extends DCLogic {
 
     if (outro) doc.outro = outro;
     else if (topic) doc.outro = topic + " 관련 내용을 정리하는 마무리 문단입니다.";
-
-    if (st.refImages.length) {
-      const used = doc.sections.filter(function (s) { return !!s.image; }).length;
-      if (!doc.thumbnail && st.refImages[used]) doc.thumbnail = st.refImages[used];
-      if (!doc.finalImage && st.refImages[used + 1]) doc.finalImage = st.refImages[used + 1];
-    }
 
     if (links.length) {
       doc.btns = links.map(function (href, i) {
@@ -1644,14 +1607,8 @@ subhead에서 잡은 포인트를 구체적인 정보로 설명합니다.
 
 주제: ${st.topic || "(없음)"}
 
-참고 링크:
-${links.length ? links.join("\n") : "(없음)"}
-
-참고 이미지: ${st.refImages.length ? st.refImages.length + "장 첨부됨" : "(없음)"}
-${st.refImages.length ? "첨부된 이미지가 있다면 실제로 확인하고, 그 안에 담긴 정보(수치·표·화면·상황)를 본문 내용과 이미지 배치 판단에 반영합니다. 이미지에 없는 내용을 있는 것처럼 지어내지 않습니다." : ""}
-
-참고 텍스트:
-${st.refText || "(없음)"}
+참고자료: ${st.hasRef ? "있음" : "없음"}
+${st.hasRef ? "참고자료를 실제로 확인하고, 그 안의 사실·수치·조건을 본문 내용에 반영해 작성하세요. 참고자료에 없는 내용을 있는 것처럼 지어내지 않습니다.\n\n참고 링크:\n" + (links.length ? links.join("\n") : "(없음)") + "\n\n참고 텍스트:\n" + (st.refText || "(없음)") : "참고자료 없음"}
 
 추가 지시:
 ${st.instr || "(없음)"}
@@ -1698,7 +1655,7 @@ JSON 앞뒤에 설명, 인사말, 마크다운, 코드블록 또는 다른 텍�
       return {
         subhead: String(s.subhead || "소제목 " + (i + 1)),
         body: String(s.body || ""),
-        image: st.refImages[i] || null,
+        image: null,
         imageHint: String(s.visualPrompt || "이 자리에 들어갈 이미지 설명"),
         promptEdited: String(s.visualPrompt || ""),
         imgOn: true
@@ -1710,12 +1667,9 @@ JSON 앞뒤에 설명, 인사말, 마크다운, 코드블록 또는 다른 텍�
       while (doc.sections.length > want) doc.sections.pop();
       while (doc.sections.length < want) {
         const i = doc.sections.length;
-        doc.sections.push({ subhead: "소제목 " + (i + 1), body: "이 문단의 내용을 작성하세요.", image: st.refImages[i] || null, imageHint: "이 자리에 들어갈 이미지 설명", promptEdited: "", imgOn: true });
+        doc.sections.push({ subhead: "소제목 " + (i + 1), body: "이 문단의 내용을 작성하세요.", image: null, imageHint: "이 자리에 들어갈 이미지 설명", promptEdited: "", imgOn: true });
       }
     }
-    const used = doc.sections.filter(function (s) { return !!s.image; }).length;
-    if (st.refImages[used]) doc.thumbnail = st.refImages[used];
-    if (st.refImages[used + 1]) doc.finalImage = st.refImages[used + 1];
     const links = (st.links || []).map(function (l) { return (l || "").trim(); }).filter(Boolean);
     if (links.length) {
       doc.btns = links.map(function (href, i) {
@@ -1792,10 +1746,9 @@ JSON 앞뒤에 설명, 인사말, 마크다운, 코드블록 또는 다른 텍�
     setTimeout(() => bump(1), 700);
     try {
       const links = (this.state.links || []).map(function (l) { return (l || "").trim(); }).filter(Boolean);
-      const refImgs = (this.state.refImages || []).filter(function (u) { return u && !isVideoSrc(u); });
       const raw = hasHostAi
         ? await window.claude.complete(this.aiPrompt())
-        : await this.callClaude(this.aiPrompt(), { webSearch: links.length > 0, images: refImgs });
+        : await this.callClaude(this.aiPrompt(), { webSearch: links.length > 0 });
       bump(2);
       const jsonText = extractJson(raw);
       if (!jsonText) throw new Error("AI 응답에서 결과를 찾지 못했습니다.");
@@ -1824,10 +1777,28 @@ JSON 앞뒤에 설명, 인사말, 마크다운, 코드블록 또는 다른 텍�
 
   allowDrop = (e) => { e.preventDefault(); e.stopPropagation(); };
 
-  addRefImages = (files) => {
-    const room = Math.max(0, 8 - this.state.refImages.length);
-    files.slice(0, room).forEach((f) => {
-      this.readFile(f, (url) => this.setState((s) => ({ refImages: s.refImages.concat([url]) })));
+  addExtraImages = (sectionIdx, files) => {
+    /* read every file first and commit once -- firing one setDoc per file
+       would have each clone from the same pre-update this.state.doc, so
+       concurrent reads finishing out of order could clobber each other
+       and only the last file would stick. */
+    const cur = (this.state.doc.sections[sectionIdx].images || []).length;
+    const room = Math.max(0, 6 - cur);
+    const picked = files.slice(0, room);
+    if (!picked.length) return;
+    const urls = new Array(picked.length);
+    let remaining = picked.length;
+    picked.forEach((f, idx) => {
+      this.readFile(f, (url) => {
+        urls[idx] = url;
+        remaining -= 1;
+        if (remaining === 0) {
+          this.setDoc((d) => {
+            if (!d.sections[sectionIdx].images) d.sections[sectionIdx].images = [];
+            urls.forEach((u) => { if (u) d.sections[sectionIdx].images.push(u); });
+          });
+        }
+      });
     });
   };
 
@@ -1959,6 +1930,10 @@ JSON 앞뒤에 설명, 인사말, 마크다운, 코드블록 또는 다른 텍�
       p.push('<div class="body">' + bodyToHtml(s.body) + "</div>");
       const src = s.imgOn === false ? null : put(s.image);
       if (src) p.push(mediaTag(src, s.image, "img r-img"));
+      (s.images || []).forEach(function (extraUrl) {
+        const extraSrc = put(extraUrl);
+        if (extraSrc) p.push(mediaTag(extraSrc, extraUrl, "img r-img"));
+      });
       p.push("</div>");
     });
 
@@ -2120,13 +2095,7 @@ JSON 앞뒤에 설명, 인사말, 마크다운, 코드블록 또는 다른 텍�
     e.preventDefault();
     e.target.blur();
   };
-  /* the pt-size box is a real <input> (unlike the point/clear/apply buttons,
-     which use onMouseDown+preventDefault to never take focus) — clicking it
-     genuinely blurs the textarea/input being edited. Don't let that count as
-     "done editing": if focus is moving to something inside this field's own
-     toolbar, leave edit mode open. */
   commitEdit = (e) => {
-    if (e && e.relatedTarget && e.relatedTarget.closest && e.relatedTarget.closest("[data-edit-toolbar]")) return;
     const key = this.state.editKey;
     if (key == null) return;
     this.setField(key, this.state.editValue);
@@ -2362,6 +2331,31 @@ JSON 앞뒤에 설명, 인사말, 마크다운, 코드블록 또는 다른 텍�
         toggleImgOn: function () { self.setDoc(function (d) { d.sections[i].imgOn = d.sections[i].imgOn === false; }); },
         onClear: function () { self.setDoc(function (d) { d.sections[i].image = null; d.sections[i].imgOn = true; }); },
 
+        /* extra images: uploaded after generation, so no AI prompt needed -- just upload/remove/reorder */
+        extraImages: (s.images || []).map(function (src, j, arr) {
+          return {
+            src: src,
+            isVideo: isVideoSrc(src),
+            isImage: !isVideoSrc(src),
+            onRemove: function () { self.setDoc(function (d) { d.sections[i].images.splice(j, 1); }); },
+            canMoveUp: j > 0,
+            canMoveDown: j < arr.length - 1,
+            moveUpOpacity: j > 0 ? 1 : 0.3,
+            moveDownOpacity: j < arr.length - 1 ? 1 : 0.3,
+            onMoveUp: function () {
+              if (j === 0) return;
+              self.setDoc(function (d) { const a = d.sections[i].images; const x = a[j - 1]; a[j - 1] = a[j]; a[j] = x; });
+            },
+            onMoveDown: function () {
+              if (j >= arr.length - 1) return;
+              self.setDoc(function (d) { const a = d.sections[i].images; const x = a[j + 1]; a[j + 1] = a[j]; a[j] = x; });
+            }
+          };
+        }),
+        canAddExtraImage: (s.images || []).length < 6,
+        onAddExtraImage: function () { self.openPicker(true, function (fs) { self.addExtraImages(i, fs); }); },
+        onAddExtraImageDrop: function (e) { self.onDropFiles(e, function (fs) { self.addExtraImages(i, fs); }); },
+
         upOpacity: i === 0 ? 0.3 : 1,
         downOpacity: i === doc.sections.length - 1 ? 0.3 : 1,
         div: (function () {
@@ -2425,7 +2419,7 @@ JSON 앞뒤에 설명, 인사말, 마크다운, 코드블록 또는 다른 텍�
       };
     });
 
-    const SLOTS = [["bg", "페이지 배경"], ["text", "본문 텍스트"], ["sub", "보조 텍스트"], ["point", "포인트 컬러"], ["title", "대제목 컬러"], ["subhead", "소제목 컬러"], ["num", "중제목 번호"], ["line", "문단 구분 라인 컬러"], ["btn", "버튼 컬러"]];
+    const SLOTS = [["bg", "페이지 배경"], ["text", "본문 텍스트"], ["sub", "보조 텍스트"], ["point", "포인트 컬러"], ["title", "대제목 컬러"], ["subhead", "소제목 컬러"], ["num", "중제목 번호"], ["line", "문단 구분 라인 컬러"], ["block", "배경 블록 컬러"], ["btn", "버튼 컬러"]];
     const slots = SLOTS.map(function (pair) {
       return {
         label: pair[1], value: t[pair[0]] || t.point,
@@ -2461,32 +2455,15 @@ JSON 앞뒤에 설명, 인사말, 마크다운, 코드블록 또는 다른 텍�
       refText: st.refText,
       refTextLen: st.refText.length,
       setRefText: function (e) { self.setState({ refText: e.target.value }); },
-      refImages: st.refImages.map(function (src, i) {
-        return {
-          src: src,
-          onRemove: function () { const a = st.refImages.slice(); a.splice(i, 1); self.setState({ refImages: a }); },
-          onUse: function () {
-            self.setDoc(function (d) {
-              for (let k = 0; k < d.sections.length; k++) { if (!d.sections[k].image) { d.sections[k].image = src; return; } }
-              if (!d.finalImage) d.finalImage = src;
-            });
-          }
-        };
-      }),
-      refCount: st.refImages.length,
-      hasRefImages: st.refImages.length > 0,
-      pickRefImages: function () {
-        self.openPicker(true, function (fs) { self.addRefImages(fs); });
-      },
-      onRefDrop: function (e) { self.onDropFiles(e, function (fs) { self.addRefImages(fs); }); },
-      onRefFiles: function (e) {
-        const files = Array.prototype.slice.call(e.target.files || []);
-        const room = Math.max(0, 8 - st.refImages.length);
-        files.slice(0, room).forEach(function (f) {
-          self.readFile(f, function (url) { self.setState(function (s) { return { refImages: s.refImages.concat([url]) }; }); });
-        });
-        e.target.value = "";
-      },
+      hasRef: st.hasRef,
+      setHasRefOn: function () { self.setState({ hasRef: true }); },
+      setHasRefOff: function () { self.setState({ hasRef: false }); },
+      hasRefOnBorder: st.hasRef ? "#26241f" : "#dcd9d3",
+      hasRefOnBg: st.hasRef ? "#26241f" : "#fff",
+      hasRefOnFg: st.hasRef ? "#fff" : "#46433d",
+      hasRefOffBorder: !st.hasRef ? "#26241f" : "#dcd9d3",
+      hasRefOffBg: !st.hasRef ? "#26241f" : "#fff",
+      hasRefOffFg: !st.hasRef ? "#fff" : "#46433d",
       addLink: function () { if (st.links.length >= 5) return; self.setState({ links: st.links.concat([""]) }); },
       countOpts: ["자동", "3", "4", "5", "6"].map(function (o) {
         const on = st.count === o;
@@ -2686,9 +2663,6 @@ JSON 앞뒤에 설명, 인사말, 마크다운, 코드블록 또는 다른 텍�
       onEditValueChange: this.onEditValueChange,
       commitEdit: this.commitEdit,
       onTextareaEnter: this.onTextareaEnter,
-      applyPointToEdit: this.applyPointToEdit,
-      clearPointFromEdit: this.clearPointFromEdit,
-      applyFontSizeToEdit: this.applyFontSizeToEdit,
       onInputEnter: this.onInputEnter,
       titleEditing: st.editKey === "title",
       titleDisplay: st.editKey !== "title",
@@ -2721,6 +2695,10 @@ JSON 앞뒤에 설명, 인사말, 마크다운, 코드블록 또는 다른 텍�
       panelClosed: !st.panelOpen,
       panelW: this.props.panelWidth || 320,
       togglePanel: function () { self.setState({ panelOpen: !st.panelOpen }); },
+      undo: this.undo,
+      undoDisabled: this.undoStack.length === 0,
+      undoColor: this.undoStack.length === 0 ? "#c7c2b9" : "#26241f",
+      undoCursor: this.undoStack.length === 0 ? "default" : "pointer",
       colorBtnBg: st.panelOpen ? "#f0eeea" : "#fff",
       panelToggleLabel: st.panelOpen ? "편집 패널 닫기" : "편집 패널 열기",
       themeLabel: st.custom ? "사용자 지정" : st.presetName,
@@ -2770,11 +2748,12 @@ JSON 앞뒤에 설명, 인사말, 마크다운, 코드블록 또는 다른 텍�
       mkClear: this.clearSel,
       markColors: [
         { title: "포인트", color: t.point, css: "var(--point)" },
-        { title: "번호", color: t.num, css: "var(--num)" },
-        { title: "보조", color: t.sub, css: "var(--sub)" },
-        { title: "본문", color: t.text, css: "var(--text)" },
         { title: "레드", color: "#D0342C", css: "#D0342C" },
-        { title: "옐로", color: "#FCD21C", css: "#FCD21C" }
+        { title: "옐로", color: "#FCD21C", css: "#FCD21C" },
+        { title: "블랙", color: "#111111", css: "#111111" },
+        { title: "화이트", color: "#FFFFFF", css: "#FFFFFF" },
+        { title: "블루", color: "#1B63D4", css: "#1B63D4" },
+        { title: "그린", color: "#1E8E3E", css: "#1E8E3E" }
       ].map(function (mc) {
         return { title: mc.title, color: mc.color, onPick: function () { self.applyProps({ color: mc.css }, "color"); } };
       }),
