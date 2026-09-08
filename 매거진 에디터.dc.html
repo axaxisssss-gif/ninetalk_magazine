@@ -346,7 +346,7 @@
             <div style="font-size: 11px; color: #a8a39a; margin: 4px 0 22px">굵게·색상·크기는 텍스트를 선택하면 나타나는 도구모음에서 바로 적용하세요</div>
           </sc-if>
           <sc-if value="{{ titleDisplay }}" hint-placeholder-val="{{ true }}">
-            <div class="mz-edit" onClick="{{ startTitleEdit }}" data-rt="title" data-html="{{ titleHtml }}" style="font-size: 26px; font-weight: 700; line-height: 1.4; letter-spacing: -0.02em; color: {{ titleColor }}; margin-bottom: 22px; text-wrap: pretty"></div>
+            <div class="mz-edit" onClick="{{ startTitleEdit }}" onMouseUp="{{ onSelectText }}" data-rt="title" data-html="{{ titleHtml }}" style="font-size: 26px; font-weight: 700; line-height: 1.4; letter-spacing: -0.02em; color: {{ titleColor }}; margin-bottom: 22px; text-wrap: pretty"></div>
           </sc-if>
 
           <sc-if value="{{ introEditing }}" hint-placeholder-val="{{ false }}">
@@ -354,7 +354,7 @@
             <div style="font-size: 11px; color: #a8a39a; margin-top: 4px">굵게·색상·크기는 텍스트를 선택하면 나타나는 도구모음에서 바로 적용하세요</div>
           </sc-if>
           <sc-if value="{{ introDisplay }}" hint-placeholder-val="{{ true }}">
-            <div class="mz-edit" onClick="{{ startIntroEdit }}" data-rt="intro" data-html="{{ introHtml }}" style="font-size: 15px; font-weight: 400; line-height: 1.8; color: {{ c.text }}; text-wrap: pretty"></div>
+            <div class="mz-edit" onClick="{{ startIntroEdit }}" onMouseUp="{{ onSelectText }}" data-rt="intro" data-html="{{ introHtml }}" style="font-size: 15px; font-weight: 400; line-height: 1.8; color: {{ c.text }}; text-wrap: pretty"></div>
           </sc-if>
 
           <sc-for list="{{ sections }}" as="s" hint-placeholder-count="0">
@@ -382,7 +382,7 @@
                   <div style="font-size: 11px; color: #a8a39a; margin-top: 4px">굵게·색상·크기는 텍스트를 선택하면 나타나는 도구모음에서 바로 적용하세요</div>
                 </sc-if>
                 <sc-if value="{{ s.subheadDisplay }}" hint-placeholder-val="{{ true }}">
-                  <div class="mz-edit" onClick="{{ s.startSubheadEdit }}" data-rt="{{ s.rtSubhead }}" data-html="{{ s.subheadHtml }}" style="font-size: 19px; font-weight: 700; line-height: 1.5; letter-spacing: -0.01em; color: {{ subheadColor }}; text-wrap: pretty"></div>
+                  <div class="mz-edit" onClick="{{ s.startSubheadEdit }}" onMouseUp="{{ onSelectText }}" data-rt="{{ s.rtSubhead }}" data-html="{{ s.subheadHtml }}" style="font-size: 19px; font-weight: 700; line-height: 1.5; letter-spacing: -0.01em; color: {{ subheadColor }}; text-wrap: pretty"></div>
                 </sc-if>
               </div>
 
@@ -391,7 +391,7 @@
                 <div style="font-size: 11px; color: #a8a39a; margin-top: 4px">굵게·색상·크기는 텍스트를 선택하면 나타나는 도구모음에서 바로 적용하세요</div>
               </sc-if>
               <sc-if value="{{ s.bodyDisplay }}" hint-placeholder-val="{{ true }}">
-                <div class="mz-edit" onClick="{{ s.startBodyEdit }}" data-rt="{{ s.rtBody }}" data-body-idx="{{ s.idx }}" data-html="{{ s.bodyHtml2 }}" style="font-size: 15px; font-weight: 400; line-height: 1.8; color: {{ c.text }}; text-wrap: pretty"></div>
+                <div class="mz-edit" onClick="{{ s.startBodyEdit }}" onMouseUp="{{ onSelectText }}" data-rt="{{ s.rtBody }}" data-body-idx="{{ s.idx }}" data-html="{{ s.bodyHtml2 }}" style="font-size: 15px; font-weight: 400; line-height: 1.8; color: {{ c.text }}; text-wrap: pretty"></div>
               </sc-if>
 
               <div style="margin-top: 16px">
@@ -469,7 +469,7 @@
               <div style="font-size: 11px; color: #a8a39a; margin-top: 4px">굵게·색상·크기는 텍스트를 선택하면 나타나는 도구모음에서 바로 적용하세요</div>
             </sc-if>
             <sc-if value="{{ outroDisplay }}" hint-placeholder-val="{{ true }}">
-              <div class="mz-edit" onClick="{{ startOutroEdit }}" data-rt="outro" data-html="{{ outroHtml }}" style="font-size: 15px; font-weight: 400; line-height: 1.8; color: {{ c.text }}; text-wrap: pretty"></div>
+              <div class="mz-edit" onClick="{{ startOutroEdit }}" onMouseUp="{{ onSelectText }}" data-rt="outro" data-html="{{ outroHtml }}" style="font-size: 15px; font-weight: 400; line-height: 1.8; color: {{ c.text }}; text-wrap: pretty"></div>
             </sc-if>
           </div>
 
@@ -537,7 +537,7 @@
                         <input data-edit-key="{{ b.rtLabel }}" value="{{ editValue }}" onChange="{{ onEditValueChange }}" onBlur="{{ commitEdit }}" onKeyDown="{{ onInputEnter }}" onMouseDown="{{ stopEdit }}" onClick="{{ stopEdit }}" style="flex: 1; min-width: 40px; max-width: 100%; text-align: center; border: 1px dashed rgba(255,255,255,.7); border-radius: 3px; background: rgba(255,255,255,.18); color: {{ b.fg }}; font: inherit; font-size: 16px; font-weight: 700; letter-spacing: -0.01em; padding: 2px 4px">
                       </sc-if>
                       <sc-if value="{{ b.labelDisplay }}" hint-placeholder-val="{{ true }}">
-                        <span class="mz-edit" onClick="{{ b.startLabelEdit }}" onMouseDown="{{ stopEdit }}" data-rt="{{ b.rtLabel }}" data-html="{{ b.labelHtml }}" style="cursor: text; outline: none"></span>
+                        <span class="mz-edit" onClick="{{ b.startLabelEdit }}" onMouseDown="{{ stopEdit }}" onMouseUp="{{ onSelectText }}" data-rt="{{ b.rtLabel }}" data-html="{{ b.labelHtml }}" style="cursor: text; outline: none"></span>
                       </sc-if>
                     </div>
                   </sc-if>
@@ -577,7 +577,7 @@
               <div style="font-size: 11px; color: #a8a39a; margin-top: 4px">굵게·색상·크기는 텍스트를 선택하면 나타나는 도구모음에서 바로 적용하세요</div>
             </sc-if>
             <sc-if value="{{ footerDisplay }}" hint-placeholder-val="{{ true }}">
-              <div class="mz-edit" onClick="{{ startFooterEdit }}" data-rt="footer" data-html="{{ footerHtml }}" style="font-size: 12px; font-weight: 400; line-height: 1.75; color: {{ c.sub }}; text-align: center; text-wrap: pretty"></div>
+              <div class="mz-edit" onClick="{{ startFooterEdit }}" onMouseUp="{{ onSelectText }}" data-rt="footer" data-html="{{ footerHtml }}" style="font-size: 12px; font-weight: 400; line-height: 1.75; color: {{ c.sub }}; text-align: center; text-wrap: pretty"></div>
             </sc-if>
 
             <sc-if value="{{ snsOn }}" hint-placeholder-val="{{ true }}">
