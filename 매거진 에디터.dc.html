@@ -25,6 +25,14 @@
   @keyframes spin { to { transform: rotate(360deg); } }
   @keyframes fadeUp { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
   .mz-sec:hover .mz-handle { opacity: 1 !important; }
+  @property --mz-ga { syntax: '<angle>'; inherits: false; initial-value: 0deg; }
+  @keyframes mzGlowSpin { to { --mz-ga: 360deg; } }
+  .mz-glow {
+    border: 3px solid transparent;
+    background-origin: border-box;
+    background-clip: padding-box, border-box;
+    animation: mzGlowSpin 2.6s linear infinite;
+  }
 </style>
 </helmet>
 
@@ -317,7 +325,7 @@
                 </div>
                 <div onClick="{{ stop }}" style="border-top: 1px dashed #cfcbc3; padding-top: 9px; margin-top: 10px; display: flex; gap: 8px; align-items: flex-start">
                   <span style="flex: none; font-size: 10px; font-family: ui-monospace, monospace; color: #a8a39a; padding-top: 2px">PROMPT 01</span>
-                  <span contentEditable="{{ true }}" suppressContentEditableWarning="{{ true }}" onBlur="{{ onThumbPrompt }}" style="flex: 1; min-width: 0; font-size: 11px; line-height: 1.6; color: #8d8880; white-space: pre-line; max-height: 240px; overflow: auto">{{ thumbPrompt }}<img src="./gettyimages-2228773030-mtjh71f9-0xls.jpg" alt="gettyimages-2228773030" width="6000" height="4000" style="max-width: 100%; height: auto; display: block; object-fit: cover; width: 6000px; aspect-ratio: 6000 / 4000"></span>
+                  <span contentEditable="{{ true }}" suppressContentEditableWarning="{{ true }}" onBlur="{{ onThumbPrompt }}" style="flex: 1; min-width: 0; font-size: 11px; line-height: 1.6; color: #8d8880; white-space: pre-line; max-height: 240px; overflow: auto">{{ thumbPrompt }}</span>
                   <button onClick="{{ copyThumbPrompt }}" style="flex: none; border: 1px solid #cfcbc3; background: #fff; color: #6f6a62; font: inherit; font-size: 10px; font-family: ui-monospace, monospace; padding: 3px 7px; cursor: pointer">{{ thumbCopyLabel }}</button>
                 </div>
               </div>
@@ -528,12 +536,13 @@
                     <button onClick="{{ b.toggleType }}" style="flex: none; border: 1px solid {{ b.typeColor }}; background: none; color: {{ b.typeColor }}; font: inherit; font-size: 10px; font-weight: 700; font-family: ui-monospace, monospace; padding: 3px 7px; cursor: pointer">{{ b.typeLabel }}</button>
                     <button onClick="{{ b.toggleShape }}" style="flex: none; border: 1px solid rgba(127,127,127,.45); background: none; color: {{ c.sub }}; font: inherit; font-size: 10px; font-weight: 700; font-family: ui-monospace, monospace; padding: 3px 7px; cursor: pointer">{{ b.shapeLabel }}</button>
                     <div style="flex: 1"></div>
+                    <button onClick="{{ b.toggleGlow }}" title="강조 모션 on/off" style="flex: none; display: flex; align-items: center; gap: 5px; border: none; background: none; font: inherit; font-size: 11px; font-weight: 600; color: {{ b.glowColor }}; cursor: pointer">{{ b.glowIcon }} 강조</button>
                     <button onClick="{{ b.toggleOn }}" style="flex: none; display: flex; align-items: center; gap: 5px; border: none; background: none; font: inherit; font-size: 11px; font-weight: 600; color: {{ b.onColor }}; cursor: pointer">{{ b.onIcon }} {{ b.onLabel }}</button>
                     <button onClick="{{ b.onRemove }}" style="flex: none; border: none; background: none; color: #b0aba2; font: inherit; font-size: 13px; cursor: pointer">✕</button>
                   </div>
 
                   <sc-if value="{{ b.isButton }}" hint-placeholder-val="{{ true }}">
-                    <div style="display: flex; align-items: center; justify-content: center; gap: 8px; background: {{ b.fill }}; border: 2px solid {{ b.stroke }}; border-radius: {{ b.radius }}px; padding: 15px 20px; text-align: center; cursor: pointer; color: {{ b.fg }}; font-size: 16px; font-weight: 700; letter-spacing: -0.01em; opacity: {{ b.opacity }}; box-shadow: 0 2px 10px rgba(0,0,0,.13)">
+                    <div class="{{ b.glowClass }}" style="{{ b.previewStyle }}">
                       <sc-if value="{{ b.labelEditing }}" hint-placeholder-val="{{ false }}">
                         <input data-edit-key="{{ b.rtLabel }}" value="{{ editValue }}" onChange="{{ onEditValueChange }}" onBlur="{{ commitEdit }}" onKeyDown="{{ onInputEnter }}" onMouseDown="{{ stopEdit }}" onClick="{{ stopEdit }}" style="flex: 1; min-width: 40px; max-width: 100%; text-align: center; border: 1px dashed rgba(255,255,255,.7); border-radius: 3px; background: rgba(255,255,255,.18); color: {{ b.fg }}; font: inherit; font-size: 16px; font-weight: 700; letter-spacing: -0.01em; padding: 2px 4px">
                       </sc-if>
@@ -560,9 +569,6 @@
 
                   <div style="display: flex; gap: 6px; margin-top: 8px; align-items: center">
                     <span style="flex: none; font-size: 10px; font-family: ui-monospace, monospace; color: #b0aba2">COLOR</span>
-                    <sc-for list="{{ b.swatches }}" as="w" hint-placeholder-count="6">
-                      <button onClick="{{ w.onPick }}" title="{{ w.hex }}" style="flex: none; width: 20px; height: 20px; border: {{ w.size }}px solid {{ w.ring }}; background: {{ w.hex }}; cursor: pointer; padding: 0"></button>
-                    </sc-for>
                     <input value="{{ b.colorValue }}" onChange="{{ b.onColorInput }}" style="flex: 1; min-width: 0; font: inherit; font-size: 10px; font-family: ui-monospace, monospace; padding: 4px 6px; border: 1px solid #dcd9d3; background: #fcfbfa; color: #26241f; text-transform: uppercase">
                   </div>
 
@@ -791,7 +797,9 @@
       <div onClick="{{ stop }}" style="width: 100%; max-width: 520px; max-height: 86vh; overflow: auto; background: #fff; border: 1px solid #d3cfc8; padding: 26px 26px 22px">
         <div style="font-size: 16px; font-weight: 700; margin-bottom: 8px">Claude.ai 구독으로 생성하기</div>
         <div style="font-size: 13px; line-height: 1.7; color: #7d7972; margin-bottom: 16px; text-wrap: pretty">별도 API 키 없이 지금 쓰시는 Claude.ai 구독으로 생성합니다. ① 아래 프롬프트를 복사해 Claude.ai 새 대화에 붙여넣고 ② 나온 답변 전체를 복사해 아래 칸에 붙여넣은 뒤 ③ 적용을 누르세요.</div>
-
+        <sc-if value="{{ hasRefImages }}" hint-placeholder-val="{{ false }}">
+          <div style="margin: -8px 0 16px; padding: 9px 12px; border: 1px solid #e6d3a8; background: #fdf7e8; font-size: 12px; line-height: 1.6; color: #7a6428">참고 이미지를 {{ refCount }}장 넣어두셨네요 — Claude.ai에 프롬프트를 붙여넣을 때, 그 이미지들도 같이 첨부해서 보내야 AI가 실제로 보고 반영합니다.</div>
+        </sc-if>
         <div style="display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 6px">
           <label style="font-size: 12px; font-weight: 700; color: #46433d">① 프롬프트</label>
           <div style="display: flex; gap: 8px">
@@ -954,8 +962,8 @@ const DIVIDER_KEYS = Object.keys(DIVIDERS);
 
 const OUTROS = {
   "여백": function () { return { gap: 44, border: "none", bg: "transparent", padTop: 0, padX: 0, padBottom: 0, radius: 0 }; },
-  "구분선": function (t) { return { gap: 40, border: "1px solid " + t.num, bg: "transparent", padTop: 28, padX: 0, padBottom: 0, radius: 0 }; },
-  "굵은 선": function (t) { return { gap: 40, border: "3px solid " + t.point, bg: "transparent", padTop: 26, padX: 0, padBottom: 0, radius: 0 }; },
+  "구분선": function (t) { return { gap: 40, border: "1px solid " + (t.line || t.num), bg: "transparent", padTop: 28, padX: 0, padBottom: 0, radius: 0 }; },
+  "굵은 선": function (t) { return { gap: 40, border: "3px solid " + (t.line || t.point), bg: "transparent", padTop: 26, padX: 0, padBottom: 0, radius: 0 }; },
   "블록": function () { return { gap: 40, border: "none", bg: "rgba(127,127,127,.09)", padTop: 22, padX: 18, padBottom: 24, radius: 16 }; }
 };
 
@@ -1017,7 +1025,35 @@ function ratio(a, b) {
 function slug(t) {
   return String(t).trim().replace(/[^\uAC00-\uD7A3a-zA-Z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 24) || "magazine";
 }
+/* mixes a hex color toward white so the animated button-glow ring reads as
+   "brighter than the button" without needing a separate color input */
+function lighten(hex, amt) {
+  const h = String(hex || "").replace("#", "");
+  const full = h.length === 3 ? h.split("").map(function (c) { return c + c; }).join("") : h;
+  const num = parseInt(full, 16);
+  if (full.length !== 6 || isNaN(num)) return "#ffffff";
+  const r = (num >> 16) & 255, g = (num >> 8) & 255, b = num & 255;
+  const mix = function (c) { return Math.round(c + (255 - c) * amt); };
+  const toHex = function (c) { return c.toString(16).padStart(2, "0"); };
+  return "#" + toHex(mix(r)) + toHex(mix(g)) + toHex(mix(b));
+}
+/* animated gradient-border trick: a solid layer clipped to padding-box sits
+   on top of a rotating conic-gradient layer clipped to border-box, so the
+   glow only ever shows in the border ring and follows whatever shape
+   (pill/square) the button already has -- no masks, no absolute
+   positioning, nothing that can drift off the button. Shared by the live
+   editor preview and the exported page so both look the same. */
+function glowBg(color) {
+  const glow = lighten(color, 0.55);
+  return "background-image:linear-gradient(" + color + "," + color + "),conic-gradient(from var(--mz-ga),"
+    + glow + " 0%,transparent 35%," + glow + " 70%,transparent 100%)";
+}
 function isVideoSrc(u) { return /^data:video\//i.test(u || ""); }
+function dataUrlToImagePart(u) {
+  const m = /^data:([^;,]+);base64,(.+)$/.exec(u || "");
+  if (!m) return null;
+  return { type: "image", source: { type: "base64", media_type: m[1], data: m[2] } };
+}
 /* pull the first balanced {...} object out of a raw AI response.
    scans string literals so it isn't fooled by braces inside quoted text,
    and escapes any raw newline/tab a model left unescaped inside a string
@@ -1391,7 +1427,6 @@ class Component extends DCLogic {
         body: src || (topic
           ? topic + "와 관련해 이 부분에서 다룰 내용입니다. " + (instr ? instr + " " : "") + "참고 자료를 반영해 두세 문장으로 채워주세요."
           : "이 문단에 들어갈 내용을 두세 문장으로 채워주세요."),
-        caption: "",
         image: st.refImages[i] || null,
         imageHint: instr || "이 자리에 들어갈 이미지 설명",
         imgOn: true
@@ -1519,13 +1554,6 @@ subhead에서 잡은 포인트를 구체적인 정보로 설명합니다.
 * 공백 제외 300~500자로 작성합니다.
 * 5문장 이상으로 작성합니다.
 
-■ caption
-
-시각 자료를 이해하는 데 도움이 되는 한 줄 설명입니다.
-
-본문과 같은 내용을 그대로 반복하지 않습니다.
-필요하지 않으면 빈 문자열("")로 작성합니다.
-
 ━━━━━━━━━━━━━━━━━━
 [OUTRO]
 ━━━━━━━━━━━━━━━━━━
@@ -1610,6 +1638,9 @@ subhead에서 잡은 포인트를 구체적인 정보로 설명합니다.
 참고 링크:
 ${links.length ? links.join("\n") : "(없음)"}
 
+참고 이미지: ${st.refImages.length ? st.refImages.length + "장 첨부됨" : "(없음)"}
+${st.refImages.length ? "첨부된 이미지가 있다면 실제로 확인하고, 그 안에 담긴 정보(수치·표·화면·상황)를 본문 내용과 이미지 배치 판단에 반영합니다. 이미지에 없는 내용을 있는 것처럼 지어내지 않습니다." : ""}
+
 참고 텍스트:
 ${st.refText || "(없음)"}
 
@@ -1636,7 +1667,6 @@ JSON 앞뒤에 설명, 인사말, 마크다운, 코드블록 또는 다른 텍�
 {
 "subhead": "",
 "body": "",
-"caption": "",
 "visualPrompt": ""
 }
 ],
@@ -1659,7 +1689,6 @@ JSON 앞뒤에 설명, 인사말, 마크다운, 코드블록 또는 다른 텍�
       return {
         subhead: String(s.subhead || "소제목 " + (i + 1)),
         body: String(s.body || ""),
-        caption: String(s.caption || ""),
         image: st.refImages[i] || null,
         imageHint: String(s.visualPrompt || "이 자리에 들어갈 이미지 설명"),
         promptEdited: String(s.visualPrompt || ""),
@@ -1672,7 +1701,7 @@ JSON 앞뒤에 설명, 인사말, 마크다운, 코드블록 또는 다른 텍�
       while (doc.sections.length > want) doc.sections.pop();
       while (doc.sections.length < want) {
         const i = doc.sections.length;
-        doc.sections.push({ subhead: "소제목 " + (i + 1), body: "이 문단의 내용을 작성하세요.", caption: "", image: st.refImages[i] || null, imageHint: "이 자리에 들어갈 이미지 설명", promptEdited: "", imgOn: true });
+        doc.sections.push({ subhead: "소제목 " + (i + 1), body: "이 문단의 내용을 작성하세요.", image: st.refImages[i] || null, imageHint: "이 자리에 들어갈 이미지 설명", promptEdited: "", imgOn: true });
       }
     }
     const used = doc.sections.filter(function (s) { return !!s.image; }).length;
@@ -1696,10 +1725,15 @@ JSON 앞뒤에 설명, 인사말, 마크다운, 코드블록 또는 다른 텍�
   callClaude = async (prompt, opts) => {
     const apiKey = getApiKey();
     if (!apiKey) throw new Error("API 키가 설정되어 있지 않습니다.");
+    /* attach reference images as real vision input so the model can see
+       what's actually in them, instead of the text prompt just claiming
+       images exist without the model ever having looked at them. */
+    const imageParts = ((opts && opts.images) || []).map(dataUrlToImagePart).filter(Boolean);
+    const content = imageParts.length ? imageParts.concat([{ type: "text", text: prompt }]) : prompt;
     const body = {
       model: getApiModel(),
       max_tokens: 8192,
-      messages: [{ role: "user", content: prompt }]
+      messages: [{ role: "user", content: content }]
     };
     if (opts && opts.webSearch) {
       body.tools = [{ type: "web_search_20250305", name: "web_search", max_uses: 5 }];
@@ -1749,9 +1783,10 @@ JSON 앞뒤에 설명, 인사말, 마크다운, 코드블록 또는 다른 텍�
     setTimeout(() => bump(1), 700);
     try {
       const links = (this.state.links || []).map(function (l) { return (l || "").trim(); }).filter(Boolean);
+      const refImgs = (this.state.refImages || []).filter(function (u) { return u && !isVideoSrc(u); });
       const raw = hasHostAi
         ? await window.claude.complete(this.aiPrompt())
-        : await this.callClaude(this.aiPrompt(), { webSearch: links.length > 0 });
+        : await this.callClaude(this.aiPrompt(), { webSearch: links.length > 0, images: refImgs });
       bump(2);
       const jsonText = extractJson(raw);
       if (!jsonText) throw new Error("AI 응답에서 결과를 찾지 못했습니다.");
@@ -1878,22 +1913,26 @@ JSON 앞뒤에 설명, 인사말, 마크다운, 코드블록 또는 다른 텍�
     p.push(".body{font-size:15px;font-weight:400;line-height:1.8;color:" + t.text + "}");
     p.push(".num{display:inline-block;border:1px solid " + t.num + ";border-radius:999px;padding:4px 14px;margin-bottom:12px;font-size:12px;font-weight:700;line-height:1.4;color:" + t.num + "}");
     p.push(".sub{font-size:19px;font-weight:700;line-height:1.5;letter-spacing:-.01em;color:" + (t.subhead || t.point) + ";margin:0 0 18px}");
-    p.push(".cap{font-size:13px;line-height:1.6;color:" + t.sub + ";margin-top:8px}");
     p.push(".img{display:block;width:100%;height:auto;margin-top:16px}");
     p.push(".foot{margin-top:36px;padding-top:18px;font-size:12px;line-height:1.75;color:" + t.sub + ";text-align:center}");
     p.push(".sns{display:flex;justify-content:center;gap:14px;margin-top:22px}.sns a{display:block;width:34px;height:34px}.sns img{width:100%;height:100%;object-fit:contain}");
     p.push(".char{display:flex;justify-content:center;margin-top:20px}.char img{width:190px;height:auto}");
     p.push(".btns{margin-top:32px;display:flex;flex-direction:column;gap:10px}.btns a{display:flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;font-size:16px;font-weight:700;padding:15px 20px;box-shadow:0 2px 10px rgba(0,0,0,.13)}");
     p.push(".btns img{display:block;width:100%;height:auto}");
+    p.push("@keyframes heroIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}.hero{opacity:0;animation:heroIn .8s cubic-bezier(.16,.8,.24,1) forwards}");
     p.push(".reveal{opacity:0;transform:translateY(28px);transition:opacity 1.1s cubic-bezier(.16,.8,.24,1),transform 1.1s cubic-bezier(.16,.8,.24,1)}.reveal.in{opacity:1;transform:translateY(0)}");
+    p.push(".reveal-media{opacity:0;transform:scale(1.06);transition:opacity 1.1s cubic-bezier(.16,.8,.24,1),transform 1.3s cubic-bezier(.16,.8,.24,1)}.reveal-media.in{opacity:1;transform:scale(1)}");
+    p.push(".reveal .r-img{opacity:0;transform:scale(1.05);transition:opacity 1s cubic-bezier(.16,.8,.24,1) .15s,transform 1.3s cubic-bezier(.16,.8,.24,1) .15s}.reveal.in .r-img{opacity:1;transform:scale(1)}");
+    p.push(".btns a{transition:transform .18s ease,box-shadow .18s ease}.btns a:hover{transform:translateY(-3px);box-shadow:0 10px 22px rgba(0,0,0,.18)}");
+    p.push("@property --mz-ga{syntax:'<angle>';inherits:false;initial-value:0deg}@keyframes mzGlowSpin{to{--mz-ga:360deg}}.mz-glow{border:3px solid transparent;background-origin:border-box;background-clip:padding-box,border-box;animation:mzGlowSpin 2.6s linear infinite}");
     p.push("</style></head><body><div class=\"wrap\">");
 
     const thumb = doc.thumbOn === false ? null : put(doc.thumbnail);
-    if (thumb) p.push(mediaTag(thumb, doc.thumbnail, "img", "margin:-44px -28px 28px;width:calc(100% + 56px)"));
+    if (thumb) p.push(mediaTag(thumb, doc.thumbnail, "img hero", "margin:-44px -28px 28px;width:calc(100% + 56px)"));
     if (doc.badgeOn !== false) {
-      p.push('<div style="display:flex;margin-bottom:20px"><span style="border:1px solid ' + t.sub + ';border-radius:999px;padding:4px 12px;font-size:11px;font-weight:500;line-height:1.4;letter-spacing:.02em;color:' + t.sub + '">' + esc(doc.badge || "나인톡") + " · " + esc(doc.category || "헬스") + "</span></div>");
+      p.push('<div class="hero" style="display:flex;margin-bottom:20px;animation-delay:.12s"><span style="border:1px solid ' + t.sub + ';border-radius:999px;padding:4px 12px;font-size:11px;font-weight:500;line-height:1.4;letter-spacing:.02em;color:' + t.sub + '">' + esc(doc.badge || "나인톡") + " · " + esc(doc.category || "헬스") + "</span></div>");
     }
-    p.push('<h1 class="ttl">' + stripEmptyMarks(doc.title || "") + "</h1>");
+    p.push('<h1 class="ttl hero" style="animation-delay:.22s">' + stripEmptyMarks(doc.title || "") + "</h1>");
     p.push('<div class="body reveal">' + bodyToHtml(doc.intro || "") + "</div>");
 
     doc.sections.forEach(function (s, i) {
@@ -1906,17 +1945,14 @@ JSON 앞뒤에 설명, 인사말, 마크다운, 코드블록 또는 다른 텍�
       p.push("<div>" + numHtml + '<h2 class="sub">' + stripEmptyMarks(s.subhead || "") + "</h2></div>");
       p.push('<div class="body">' + bodyToHtml(s.body) + "</div>");
       const src = s.imgOn === false ? null : put(s.image);
-      if (src) {
-        p.push(mediaTag(src, s.image, "img"));
-        if (s.caption) p.push('<div class="cap">' + esc(s.caption) + "</div>");
-      }
+      if (src) p.push(mediaTag(src, s.image, "img r-img"));
       p.push("</div>");
     });
 
     p.push('<div class="reveal" style="margin-top:' + out.gap + "px;border-top:" + out.border + ";background:" + out.bg + ";border-radius:" + out.radius + "px;padding:" + out.padTop + "px " + out.padX + "px " + out.padBottom + 'px"><div class="body">' + bodyToHtml(doc.outro || "") + "</div></div>");
 
     const fin = doc.finalOn === false ? null : put(doc.finalImage);
-    if (fin) p.push(mediaTag(fin, doc.finalImage, "img reveal", "margin-top:40px"));
+    if (fin) p.push(mediaTag(fin, doc.finalImage, "img reveal-media", "margin-top:40px"));
 
     const btns = (doc.btns || []).filter(function (b) { return b.on !== false; });
     if (btns.length) {
@@ -1929,7 +1965,10 @@ JSON 앞뒤에 설명, 인사말, 마크다운, 코드블록 또는 다른 텍�
           if (src) p.push('<a href="' + href + '" target="_blank" rel="noopener" style="padding:0;box-shadow:none">' + mediaTag(src, b.img, "", "border-radius:" + (b.shape === "square" ? 0 : 14) + "px") + "</a>");
         } else {
           const color = b.color || btnColor;
-          p.push('<a href="' + href + '" target="_blank" rel="noopener" style="background:' + color + ";color:" + t.bg + ";border-radius:" + radius + 'px">' + stripEmptyMarks(b.label || "버튼") + "</a>");
+          const glowOn = b.glowOn !== false;
+          const glowCls = glowOn ? " mz-glow" : "";
+          const bg = glowOn ? glowBg(color) : "background:" + color;
+          p.push('<a href="' + href + '" target="_blank" rel="noopener" class="' + glowCls.trim() + '" style="' + bg + ";color:" + t.bg + ";border-radius:" + radius + 'px">' + stripEmptyMarks(b.label || "버튼") + "</a>");
         }
       });
       p.push("</div>");
@@ -1947,7 +1986,7 @@ JSON 앞뒤에 설명, 인사말, 마크다운, 코드블록 또는 다른 텍�
     p.push("</div>");
     /* scroll-in reveal: each .reveal block fades/slides up once, the first time
        it enters the viewport, then is left alone (no re-trigger on scroll back up) */
-    p.push("<script>(function(){var els=document.querySelectorAll('.reveal');if(!('IntersectionObserver' in window)){els.forEach(function(el){el.classList.add('in')});return}var io=new IntersectionObserver(function(entries){entries.filter(function(en){return en.isIntersecting}).forEach(function(en,idx){setTimeout(function(){en.target.classList.add('in')},idx*140);io.unobserve(en.target)})},{threshold:.15,rootMargin:'0px 0px -60px 0px'});els.forEach(function(el){io.observe(el)})})();</" + "script>");
+    p.push("<script>(function(){var els=document.querySelectorAll('.reveal,.reveal-media');if(!('IntersectionObserver' in window)){els.forEach(function(el){el.classList.add('in')});return}var io=new IntersectionObserver(function(entries){entries.filter(function(en){return en.isIntersecting}).forEach(function(en,idx){setTimeout(function(){en.target.classList.add('in')},idx*140);io.unobserve(en.target)})},{threshold:.15,rootMargin:'0px 0px -60px 0px'});els.forEach(function(el){io.observe(el)})})();</" + "script>");
     p.push("</body></html>");
 
     return { html: p.join(""), imgs: imgs };
@@ -2300,7 +2339,6 @@ JSON 앞뒤에 설명, 인사말, 마크다운, 코드블록 또는 다른 텍�
         subhead: s.subhead,
         bodyHtml: { __html: bodyToHtml(s.body) },
         imageHint: s.imageHint || "이 자리에 들어갈 이미지 설명",
-        caption: s.caption || "이미지 설명을 입력하세요",
         image: s.image,
         hasImage: !!s.image,
         imageIsVideo: isVideoSrc(s.image),
@@ -2341,7 +2379,6 @@ JSON 앞뒤에 설명, 인사말, 마크다운, 코드블록 또는 다른 텍�
         subheadEditing: st.editKey === "sec:" + i + ":subhead",
         subheadDisplay: st.editKey !== "sec:" + i + ":subhead",
         startSubheadEdit: function () { self.startEdit("sec:" + i + ":subhead", s.subhead || ""); },
-        onCaption: function (e) { const v = e.currentTarget.innerText.trim(); self.setDoc(function (d) { d.sections[i].caption = v; }); },
         onSelect: function (e) {
           const sel = window.getSelection();
           if (!sel || sel.isCollapsed || !String(sel).trim()) { self.setState({ emph: null }); return; }
@@ -2352,7 +2389,7 @@ JSON 앞뒤에 설명, 인사말, 마크다운, 코드블록 또는 다른 텍�
         },
         onUp: function () { if (i === 0) return; self.setDoc(function (d) { const a = d.sections; const x = a[i - 1]; a[i - 1] = a[i]; a[i] = x; }); },
         onDown: function () { self.setDoc(function (d) { const a = d.sections; if (i >= a.length - 1) return; const x = a[i + 1]; a[i + 1] = a[i]; a[i] = x; }); },
-        onAdd: function () { self.setDoc(function (d) { d.sections.splice(i + 1, 0, { subhead: "새 중제목", body: "본문을 입력하세요.", imageHint: "이 문단에 들어갈 이미지 설명", caption: "", image: null }); }); },
+        onAdd: function () { self.setDoc(function (d) { d.sections.splice(i + 1, 0, { subhead: "새 중제목", body: "본문을 입력하세요.", imageHint: "이 문단에 들어갈 이미지 설명", image: null }); }); },
         onDelete: function () { self.setDoc(function (d) { if (d.sections.length > 1) d.sections.splice(i, 1); }); },
         onPick: function () { self.openPicker(false, function (fs) { self.readFile(fs[0], function (url, a) { self.setDoc(function (d) { d.sections[i].image = url; d.sections[i].imageAspect = a; }); }); }); },
         onDrop: function (e) { self.onDropFiles(e, function (fs) { self.readFile(fs[0], function (url, a) { self.setDoc(function (d) { d.sections[i].image = url; d.sections[i].imageAspect = a; }); }); }); },
@@ -2493,10 +2530,15 @@ JSON 앞뒤에 설명, 인사말, 마크다운, 코드블록 또는 다른 텍�
         if ((doc.btns || []).length >= 10) return;
         self.setDoc(function (d) {
           if (!d.btns) d.btns = [];
-          d.btns.push({ type: "button", shape: "round", label: "버튼 " + (d.btns.length + 1), link: "", on: true, img: null, imgAspect: 3 });
+          d.btns.push({ type: "button", shape: "round", label: "버튼 " + (d.btns.length + 1), link: "", on: true, glowOn: true, img: null, imgAspect: 3 });
         });
       },
       btns: (doc.btns || []).map(function (b, i) {
+        const btnFill = b.color || t.btn || t.point;
+        const btnRadius = b.shape === "square" ? 0 : 999;
+        const btnGlowOn = b.glowOn !== false;
+        const previewStyle = "display:flex;align-items:center;justify-content:center;gap:8px;border-radius:" + btnRadius + "px;padding:15px 20px;text-align:center;cursor:pointer;color:" + t.bg + ";font-size:16px;font-weight:700;letter-spacing:-0.01em;opacity:" + (b.on ? 1 : 0.35) + ";box-shadow:0 2px 10px rgba(0,0,0,.13);"
+          + (btnGlowOn ? glowBg(btnFill) + ";border:3px solid transparent" : "background:" + btnFill + ";border:2px solid " + btnFill);
         return {
           idx: String(i + 1).padStart(2, "0"),
           isButton: b.type !== "image",
@@ -2509,6 +2551,10 @@ JSON 앞뒤에 설명, 인사말, 마크다운, 코드블록 또는 다른 텍�
           onIcon: b.on ? "●" : "○",
           onLabel: b.on ? "ON" : "OFF",
           opacity: b.on ? 1 : 0.35,
+          glowClass: btnGlowOn ? "mz-glow" : "",
+          glowColor: btnGlowOn ? "#4f7a55" : "#b0aba2",
+          glowIcon: btnGlowOn ? "●" : "○",
+          previewStyle: previewStyle,
           hasImg: !!b.img,
           noImg: !b.img,
           imgSrc: b.img || "",
@@ -2516,18 +2562,8 @@ JSON 앞뒤에 설명, 인사말, 마크다운, 코드블록 또는 다른 텍�
           imgIsImage: !!b.img && !isVideoSrc(b.img),
           imgAspect: b.imgAspect || 3,
           shapeLabel: b.shape === "square" ? "SQUARE" : "ROUND",
-          radius: b.shape === "square" ? 0 : 999,
           imgRadius: b.shape === "square" ? 0 : 14,
-          fill: b.color || t.btn || t.point,
-          stroke: b.color || t.btn || t.point,
           fg: t.bg,
-          swatches: ["#1B7FD4", "#0F172A", "#B07A3C", "#4F7A55", "#C0392B", "#7A5CD6"].map(function (hex) {
-            const on = (b.color || t.btn || t.point) === hex;
-            return {
-              hex: hex, ring: on ? "#26241f" : "rgba(127,127,127,.3)", size: on ? 3 : 1,
-              onPick: function () { self.setDoc(function (d) { d.btns[i].color = hex; }); }
-            };
-          }),
           colorValue: b.color || t.btn || t.point,
           onColorInput: function (e) {
             let v = e.target.value.trim();
@@ -2537,6 +2573,7 @@ JSON 앞뒤에 설명, 인사말, 마크다운, 코드블록 또는 다른 텍�
           toggleShape: function () { self.setDoc(function (d) { d.btns[i].shape = d.btns[i].shape === "square" ? "round" : "square"; }); },
           toggleType: function () { self.setDoc(function (d) { d.btns[i].type = d.btns[i].type === "image" ? "button" : "image"; }); },
           toggleOn: function () { self.setDoc(function (d) { d.btns[i].on = !d.btns[i].on; }); },
+          toggleGlow: function () { self.setDoc(function (d) { d.btns[i].glowOn = d.btns[i].glowOn === false; }); },
           onRemove: function () { self.setDoc(function (d) { d.btns.splice(i, 1); }); },
           rtLabel: "btn:" + i + ":label",
           labelHtml: stripEmptyMarks(b.label || "버튼"),
