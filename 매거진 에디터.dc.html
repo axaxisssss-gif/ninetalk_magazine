@@ -130,7 +130,7 @@
             <label style="font-size: 13px; font-weight: 600">주제</label>
             <span style="font-size: 11px; color: #b0aba2; font-family: ui-monospace, monospace">필수 · 한 문장</span>
           </div>
-          <textarea value="{{ topic }}" onChange="{{ setTopic }}" rows="2" placeholder="예: 2026년 가족 간 증여, 얼마까지 세금 없이 줄 수 있나" style="width: 100%; box-sizing: border-box; resize: vertical; font: inherit; font-size: 14px; line-height: 1.6; padding: 11px 12px; border: 1px solid #dcd9d3; background: #fcfbfa; color: #26241f"></textarea>
+          <textarea value="{{ topic }}" onChange="{{ setTopic }}" rows="2" placeholder="주제를 입력해주세요" style="width: 100%; box-sizing: border-box; resize: vertical; font: inherit; font-size: 14px; line-height: 1.6; padding: 11px 12px; border: 1px solid #dcd9d3; background: #fcfbfa; color: #26241f"></textarea>
 
           <div style="display: flex; align-items: baseline; justify-content: space-between; margin: 24px 0 8px">
             <label style="font-size: 13px; font-weight: 600">참고 링크</label>
@@ -147,6 +147,12 @@
           <button onClick="{{ addLink }}" style="margin-top: 10px; border: 1px dashed #cfcbc3; background: none; color: #7d7972; font: inherit; font-size: 12px; font-weight: 600; padding: 8px 12px; cursor: pointer">＋ 링크 추가</button>
 
           <div style="display: flex; align-items: baseline; justify-content: space-between; margin: 24px 0 8px">
+            <label style="font-size: 13px; font-weight: 600">참고 텍스트</label>
+            <span style="font-size: 11px; color: #b0aba2; font-family: ui-monospace, monospace">선택 · {{ refTextLen }}자</span>
+          </div>
+          <textarea value="{{ refText }}" onChange="{{ setRefText }}" rows="5" placeholder="기존 발행본, 보도자료, 사내 자료 등 초안에 반영할 원문을 붙여넣으세요" style="width: 100%; box-sizing: border-box; resize: vertical; font: inherit; font-size: 13px; line-height: 1.7; padding: 11px 12px; border: 1px solid #dcd9d3; background: #fcfbfa; color: #26241f"></textarea>
+
+          <div style="display: flex; align-items: baseline; justify-content: space-between; margin: 24px 0 8px">
             <label style="font-size: 13px; font-weight: 600">참고자료</label>
             <span style="font-size: 11px; color: #b0aba2; font-family: ui-monospace, monospace">선택</span>
           </div>
@@ -154,14 +160,6 @@
             <button onClick="{{ setHasRefOff }}" style="flex: 1; border: 1px solid {{ hasRefOffBorder }}; background: {{ hasRefOffBg }}; color: {{ hasRefOffFg }}; font: inherit; font-size: 13px; font-weight: 600; padding: 9px 0; cursor: pointer">없음</button>
             <button onClick="{{ setHasRefOn }}" style="flex: 1; border: 1px solid {{ hasRefOnBorder }}; background: {{ hasRefOnBg }}; color: {{ hasRefOnFg }}; font: inherit; font-size: 13px; font-weight: 600; padding: 9px 0; cursor: pointer">있음</button>
           </div>
-
-          <sc-if value="{{ hasRef }}" hint-placeholder-val="{{ false }}">
-            <div style="display: flex; align-items: baseline; justify-content: space-between; margin: 20px 0 8px">
-              <label style="font-size: 13px; font-weight: 600">참고 텍스트</label>
-              <span style="font-size: 11px; color: #b0aba2; font-family: ui-monospace, monospace">선택 · {{ refTextLen }}자</span>
-            </div>
-            <textarea value="{{ refText }}" onChange="{{ setRefText }}" rows="5" placeholder="기존 발행본, 보도자료, 사내 자료 등 초안에 반영할 원문을 붙여넣으세요" style="width: 100%; box-sizing: border-box; resize: vertical; font: inherit; font-size: 13px; line-height: 1.7; padding: 11px 12px; border: 1px solid #dcd9d3; background: #fcfbfa; color: #26241f"></textarea>
-          </sc-if>
 
           <div style="margin: 24px 0 8px"><label style="font-size: 13px; font-weight: 600">추가 지시</label> <span style="font-size: 11px; color: #b0aba2; font-family: ui-monospace, monospace">선택</span></div>
           <textarea value="{{ instr }}" onChange="{{ setInstr }}" rows="2" placeholder="톤, 강조할 관점 등" style="width: 100%; box-sizing: border-box; resize: vertical; font: inherit; font-size: 14px; line-height: 1.6; padding: 11px 12px; border: 1px solid #dcd9d3; background: #fcfbfa; color: #26241f"></textarea>
@@ -1609,8 +1607,10 @@ subhead에서 잡은 포인트를 구체적인 정보로 설명합니다.
 
 참고 링크: ${links.length ? links.join(", ") : "없음"}
 
+참고 텍스트: ${st.refText ? st.refText : "없음"}
+
 참고자료: ${st.hasRef ? "있음" : "없음"}
-${st.hasRef ? "참고자료를 실제로 확인하고, 그 안의 사실·수치·조건을 본문 내용에 반영해 작성하세요. 참고자료에 없는 내용을 있는 것처럼 지어내지 않습니다.\n\n참고 텍스트:\n" + (st.refText || "(없음)") : "참고자료 없음"}
+${st.hasRef ? "참고자료를 실제로 확인하고, 그 안의 사실·수치·조건을 본문 내용에 반영해 작성하세요. 참고자료에 없는 내용을 있는 것처럼 지어내지 않습니다." : "참고자료 없음"}
 
 추가 지시:
 ${st.instr || "(없음)"}
@@ -2783,7 +2783,11 @@ JSON 앞뒤에 설명, 인사말, 마크다운, 코드블록 또는 다른 텍�
       confirmReset: function () {
         try { localStorage.removeItem(KEY); } catch (e) {}
         imgKeysInStorage().forEach(function (k) { try { localStorage.removeItem(k); } catch (e) {} });
-        self.setState({ resetOpen: false, screen: "input", hasDraft: false, saveError: "", doc: JSON.parse(JSON.stringify(SAMPLE)) });
+        self.setState({
+          resetOpen: false, screen: "input", hasDraft: false, saveError: "",
+          doc: JSON.parse(JSON.stringify(SAMPLE)),
+          topic: "", instr: "", links: [], hasRef: false, refText: "", count: "자동"
+        });
       },
 
       apiKeyOpen: st.apiKeyOpen,
