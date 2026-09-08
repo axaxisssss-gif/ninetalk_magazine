@@ -39,7 +39,7 @@
 <div style="height: 100vh; display: flex; flex-direction: column; background: #f2f1ef; color: #26241f; overflow: hidden">
 
   <sc-if value="{{ isInput }}" hint-placeholder-val="{{ true }}">
-    <div style="flex: 1; overflow: auto; display: flex; justify-content: center; padding: 56px 24px 80px">
+    <div id="mz-input-scroll" style="flex: 1; overflow: auto; display: flex; justify-content: center; padding: 56px 24px 80px">
       <div style="width: 100%; max-width: 620px">
         <div style="display: flex; align-items: baseline; gap: 12px; margin-bottom: 6px">
           <div style="display: flex; align-items: center; gap: 10px"><svg width="81" height="26" style="display:block" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 507.44 162.37">
@@ -288,7 +288,7 @@
     </sc-if>
 
     <div style="flex: 1; min-height: 0; display: flex">
-      <div style="flex: 1; min-width: 0; overflow: auto; background: #e5e2dd; padding: 28px 0 90px; display: flex; justify-content: center; align-items: flex-start">
+      <div id="mz-canvas" style="flex: 1; min-width: 0; overflow: auto; background: #e5e2dd; padding: 28px 0 90px; display: flex; justify-content: center; align-items: flex-start">
         <div style="width: 430px; flex: none; box-shadow: 0 1px 3px rgba(0,0,0,.09), 0 12px 34px rgba(0,0,0,.07); background: {{ c.bg }}; --point: {{ c.point }}; --num: {{ c.num }}; --sub: {{ c.sub }}; --text: {{ c.text }}; padding: 44px 28px 56px; box-sizing: border-box; min-height: 640px">
 
           <div style="margin: -44px -28px 28px; width: calc(100% + 56px)">
@@ -613,7 +613,7 @@
       </div>
 
       <sc-if value="{{ panelOpen }}" hint-placeholder-val="{{ true }}">
-        <div style="flex: none; width: {{ panelW }}px; border-left: 1px solid #dcd9d3; background: #fff; overflow: auto">
+        <div id="mz-panel" style="flex: none; width: {{ panelW }}px; border-left: 1px solid #dcd9d3; background: #fff; overflow: auto">
           <div style="padding: 22px 20px 18px; border-bottom: 1px solid #ece9e4; display: flex; align-items: baseline; gap: 10px">
             <button onClick="{{ togglePanel }}" title="패널 접기" style="flex: none; border: 1px solid #dcd9d3; background: #fff; color: #6b6660; font: inherit; font-size: 11px; border-radius: 3px; padding: 4px 8px; cursor: pointer">›</button>
             <div style="font-size: 14px; font-weight: 700">편집 패널</div>
@@ -1180,6 +1180,15 @@ class Component extends DCLogic {
   };
 
   componentDidMount() {
+    /* browsers try to restore each scrollable element's previous scrollTop
+       on refresh (not just window scroll) -- reset explicitly so a reload
+       always lands at the top instead of wherever the user last scrolled to. */
+    try { if ("scrollRestoration" in window.history) window.history.scrollRestoration = "manual"; } catch (e) {}
+    window.scrollTo(0, 0);
+    ["mz-canvas", "mz-input-scroll", "mz-panel"].forEach(function (id) {
+      const el = document.getElementById(id);
+      if (el) el.scrollTop = 0;
+    });
     this.setState({ apiKeyInput: getApiKey(), apiModelInput: getApiModel() });
     try {
       const raw = localStorage.getItem(KEY);
@@ -1904,6 +1913,10 @@ JSON 앞뒤에 설명, 인사말, 마크다운, 코드블록 또는 다른 텍�
     };
     const p = [];
     p.push('<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8" />');
+    /* a refresh should always land back at the top of the article, not
+       wherever the reader had scrolled to -- browsers restore scroll
+       position by default, so this has to run before that kicks in. */
+    p.push("<script>if('scrollRestoration' in history)history.scrollRestoration='manual';window.scrollTo(0,0);</" + "script>");
     p.push('<meta name="viewport" content="width=device-width, initial-scale=1" />');
     p.push("<title>" + esc(doc.title) + "</title>");
     p.push('<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" />');
