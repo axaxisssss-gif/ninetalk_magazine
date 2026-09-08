@@ -1854,7 +1854,7 @@ JSON 앞뒤에 설명, 인사말, 마크다운, 코드블록 또는 다른 텍�
 
   buildExport = () => {
     const doc = this.state.doc, t = this.state.theme;
-    const out = OUTROS[doc.outroStyle || "구분선"](t);
+    const out = OUTROS[doc.outroStyle || "여백"](t);
     const btnColor = t.btn || t.point;
     const imgs = [];
     let n = 0;
@@ -2510,9 +2510,9 @@ JSON 앞뒤에 설명, 인사말, 마크다운, 코드블록 또는 다른 텍�
       lineColor: t.line || t.point,
       docBadge: doc.badge || "나인톡",
       docCategory: doc.category || "헬스",
-      outro: OUTROS[doc.outroStyle || "구분선"](t),
+      outro: OUTROS[doc.outroStyle || "여백"](t),
       outroOpts: Object.keys(OUTROS).map(function (k) {
-        const on = (doc.outroStyle || "구분선") === k;
+        const on = (doc.outroStyle || "여백") === k;
         return { label: k, border: on ? "#26241f" : "#dcd9d3", bg: on ? "#26241f" : "#fff", fg: on ? "#fff" : "#46433d", onPick: function () { self.setDoc(function (d) { d.outroStyle = k; }); } };
       }),
       thumbPrompt: doc.thumbPrompt || "생성된 이미지 프롬프트가 없습니다. 직접 입력해 주세요.",
