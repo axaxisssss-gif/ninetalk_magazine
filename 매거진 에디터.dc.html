@@ -133,6 +133,20 @@
           <textarea value="{{ topic }}" onChange="{{ setTopic }}" rows="2" placeholder="예: 2026년 가족 간 증여, 얼마까지 세금 없이 줄 수 있나" style="width: 100%; box-sizing: border-box; resize: vertical; font: inherit; font-size: 14px; line-height: 1.6; padding: 11px 12px; border: 1px solid #dcd9d3; background: #fcfbfa; color: #26241f"></textarea>
 
           <div style="display: flex; align-items: baseline; justify-content: space-between; margin: 24px 0 8px">
+            <label style="font-size: 13px; font-weight: 600">참고 링크</label>
+            <span style="font-size: 11px; color: #b0aba2; font-family: ui-monospace, monospace">선택 · 최대 5개</span>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 8px">
+            <sc-for list="{{ links }}" as="l" hint-placeholder-count="2">
+              <div style="display: flex; gap: 8px">
+                <input value="{{ l.value }}" onChange="{{ l.onChange }}" placeholder="https://" style="flex: 1; min-width: 0; font: inherit; font-size: 13px; padding: 9px 11px; border: 1px solid #dcd9d3; background: #fcfbfa; color: #26241f; font-family: ui-monospace, monospace">
+                <button onClick="{{ l.onRemove }}" title="삭제" style="flex: none; width: 34px; border: 1px solid #dcd9d3; background: #fff; color: #99948b; font: inherit; font-size: 14px; cursor: pointer">✕</button>
+              </div>
+            </sc-for>
+          </div>
+          <button onClick="{{ addLink }}" style="margin-top: 10px; border: 1px dashed #cfcbc3; background: none; color: #7d7972; font: inherit; font-size: 12px; font-weight: 600; padding: 8px 12px; cursor: pointer">＋ 링크 추가</button>
+
+          <div style="display: flex; align-items: baseline; justify-content: space-between; margin: 24px 0 8px">
             <label style="font-size: 13px; font-weight: 600">참고자료</label>
             <span style="font-size: 11px; color: #b0aba2; font-family: ui-monospace, monospace">선택</span>
           </div>
@@ -142,20 +156,6 @@
           </div>
 
           <sc-if value="{{ hasRef }}" hint-placeholder-val="{{ false }}">
-            <div style="display: flex; align-items: baseline; justify-content: space-between; margin: 20px 0 8px">
-              <label style="font-size: 13px; font-weight: 600">참고 링크</label>
-              <span style="font-size: 11px; color: #b0aba2; font-family: ui-monospace, monospace">선택 · 최대 5개</span>
-            </div>
-            <div style="display: flex; flex-direction: column; gap: 8px">
-              <sc-for list="{{ links }}" as="l" hint-placeholder-count="2">
-                <div style="display: flex; gap: 8px">
-                  <input value="{{ l.value }}" onChange="{{ l.onChange }}" placeholder="https://" style="flex: 1; min-width: 0; font: inherit; font-size: 13px; padding: 9px 11px; border: 1px solid #dcd9d3; background: #fcfbfa; color: #26241f; font-family: ui-monospace, monospace">
-                  <button onClick="{{ l.onRemove }}" title="삭제" style="flex: none; width: 34px; border: 1px solid #dcd9d3; background: #fff; color: #99948b; font: inherit; font-size: 14px; cursor: pointer">✕</button>
-                </div>
-              </sc-for>
-            </div>
-            <button onClick="{{ addLink }}" style="margin-top: 10px; border: 1px dashed #cfcbc3; background: none; color: #7d7972; font: inherit; font-size: 12px; font-weight: 600; padding: 8px 12px; cursor: pointer">＋ 링크 추가</button>
-
             <div style="display: flex; align-items: baseline; justify-content: space-between; margin: 20px 0 8px">
               <label style="font-size: 13px; font-weight: 600">참고 텍스트</label>
               <span style="font-size: 11px; color: #b0aba2; font-family: ui-monospace, monospace">선택 · {{ refTextLen }}자</span>
@@ -1607,8 +1607,10 @@ subhead에서 잡은 포인트를 구체적인 정보로 설명합니다.
 
 주제: ${st.topic || "(없음)"}
 
+참고 링크: ${links.length ? links.join(", ") : "없음"}
+
 참고자료: ${st.hasRef ? "있음" : "없음"}
-${st.hasRef ? "참고자료를 실제로 확인하고, 그 안의 사실·수치·조건을 본문 내용에 반영해 작성하세요. 참고자료에 없는 내용을 있는 것처럼 지어내지 않습니다.\n\n참고 링크:\n" + (links.length ? links.join("\n") : "(없음)") + "\n\n참고 텍스트:\n" + (st.refText || "(없음)") : "참고자료 없음"}
+${st.hasRef ? "참고자료를 실제로 확인하고, 그 안의 사실·수치·조건을 본문 내용에 반영해 작성하세요. 참고자료에 없는 내용을 있는 것처럼 지어내지 않습니다.\n\n참고 텍스트:\n" + (st.refText || "(없음)") : "참고자료 없음"}
 
 추가 지시:
 ${st.instr || "(없음)"}
