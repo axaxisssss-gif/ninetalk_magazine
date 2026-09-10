@@ -40,7 +40,7 @@
 
   <sc-if value="{{ isInput }}" hint-placeholder-val="{{ true }}">
     <div id="mz-input-scroll" style="flex: 1; overflow: auto; display: flex; justify-content: center; padding: 56px 24px 80px">
-      <div style="width: 100%; max-width: 620px">
+      <div style="width: 100%; max-width: {{ inputShellWidth }}">
         <div style="display: flex; align-items: baseline; gap: 12px; margin-bottom: 6px">
           <div style="display: flex; align-items: center; gap: 10px"><svg width="81" height="26" style="display:block" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 507.44 162.37">
   <!-- Generator: Adobe Illustrator 30.3.0, SVG Export Plug-In . SVG Version: 2.1.3 Build 182)  -->
@@ -108,20 +108,13 @@
         </div>
         <div style="font-size: 14px; line-height: 1.7; color: #7d7972; margin-bottom: 32px; text-wrap: pretty">주제와 참고 링크를 넣으면 초안을 씁니다. 결과물 화면에서 바로 고치고 HTML로 내려받으세요.</div>
 
+        <div style="display: flex; gap: 28px; align-items: flex-start">
+        <div style="flex: 1; min-width: 0; max-width: 620px">
+
         <sc-if value="{{ hasGenError }}" hint-placeholder-val="{{ false }}">
           <div style="display: flex; align-items: center; gap: 12px; padding: 12px 14px; border: 1px solid #eccac4; background: #fdf2f0; margin-bottom: 24px">
             <span style="flex: 1; font-size: 13px; line-height: 1.6; color: #8a4038">{{ genError }}</span>
             <button onClick="{{ dismissGenError }}" style="flex: none; border: none; background: none; color: #8a4038; font: inherit; font-size: 12px; text-decoration: underline; text-underline-offset: 2px; cursor: pointer">닫기</button>
-          </div>
-        </sc-if>
-
-        <sc-if value="{{ hasDraft }}" hint-placeholder-val="{{ false }}">
-          <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 14px 16px; border: 1px solid #dcd9d3; background: #fff; margin-bottom: 24px">
-            <div>
-              <div style="font-size: 13px; font-weight: 600">작업 중인 매거진이 있습니다</div>
-              <div style="font-size: 12px; color: #99948b; margin-top: 3px">{{ draftLabel }}</div>
-            </div>
-            <button onClick="{{ resume }}" style="flex: none; border: 1px solid #26241f; background: #26241f; color: #fff; font: inherit; font-size: 13px; font-weight: 600; padding: 8px 14px; cursor: pointer">이어서 작업하기</button>
           </div>
         </sc-if>
 
@@ -175,6 +168,28 @@
             <button onClick="{{ generate }}" style="border: none; background: #26241f; color: #fff; font: inherit; font-size: 14px; font-weight: 700; padding: 13px 26px; cursor: pointer">매거진 생성</button>
             <span style="font-size: 12px; color: #b0aba2; line-height: 1.6">{{ genNote }}</span>
           </div>
+        </div>
+
+        </div>
+
+        <sc-if value="{{ hasDrafts }}" hint-placeholder-val="{{ false }}">
+          <div style="flex: none; width: 280px; position: sticky; top: 0">
+            <div style="font-size: 12px; font-weight: 700; color: #99948b; margin-bottom: 10px; letter-spacing: .02em">저장된 작업 · {{ draftCount }}개</div>
+            <div style="display: flex; flex-direction: column; gap: 8px; max-height: calc(100vh - 220px); overflow-y: auto; padding-right: 2px">
+              <sc-for list="{{ draftItems }}" as="d" hint-placeholder-count="1">
+                <div style="padding: 12px 14px; border: 1px solid #dcd9d3; background: #fff">
+                  <div style="font-size: 13px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-bottom: 2px">{{ d.label }}</div>
+                  <div style="font-size: 11px; color: #99948b; margin-bottom: 10px">{{ d.when }}</div>
+                  <div style="display: flex; gap: 6px">
+                    <button onClick="{{ d.onResume }}" style="flex: 1; border: 1px solid #26241f; background: #26241f; color: #fff; font: inherit; font-size: 12px; font-weight: 600; padding: 7px 0; cursor: pointer">이어서 작업하기</button>
+                    <button onClick="{{ d.onDelete }}" title="삭제" style="flex: none; border: 1px solid #dcd9d3; background: #fff; color: #99948b; font: inherit; font-size: 12px; padding: 7px 9px; cursor: pointer">✕</button>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </sc-if>
+
         </div>
       </div>
     </div>
@@ -809,10 +824,23 @@
     <div onClick="{{ closeReset }}" style="position: fixed; inset: 0; background: rgba(28,26,22,.42); display: flex; align-items: center; justify-content: center; padding: 24px; z-index: 40">
       <div onClick="{{ stop }}" style="width: 100%; max-width: 380px; background: #fff; border: 1px solid #d3cfc8; padding: 24px">
         <div style="font-size: 15px; font-weight: 700; margin-bottom: 8px">처음부터 다시 시작할까요?</div>
-        <div style="font-size: 13px; line-height: 1.7; color: #7d7972; margin-bottom: 20px">저장 슬롯은 하나입니다. 지금 작업물은 지워집니다.</div>
+        <div style="font-size: 13px; line-height: 1.7; color: #7d7972; margin-bottom: 20px">지금 작업물은 자동으로 저장되어 있어요. 목록에서 나중에 이어할 수 있습니다.</div>
         <div style="display: flex; gap: 10px">
-          <button onClick="{{ confirmReset }}" style="border: none; background: #b4544a; color: #fff; font: inherit; font-size: 13px; font-weight: 700; padding: 10px 18px; cursor: pointer">지우고 새로 시작</button>
+          <button onClick="{{ confirmReset }}" style="border: none; background: #26241f; color: #fff; font: inherit; font-size: 13px; font-weight: 700; padding: 10px 18px; cursor: pointer">새로 시작</button>
           <button onClick="{{ closeReset }}" style="border: 1px solid #dcd9d3; background: #fff; color: #46433d; font: inherit; font-size: 13px; padding: 9px 16px; cursor: pointer">취소</button>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ deleteDraftOpen }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closeDeleteDraft }}" style="position: fixed; inset: 0; background: rgba(28,26,22,.42); display: flex; align-items: center; justify-content: center; padding: 24px; z-index: 40">
+      <div onClick="{{ stop }}" style="width: 100%; max-width: 380px; background: #fff; border: 1px solid #d3cfc8; padding: 24px">
+        <div style="font-size: 15px; font-weight: 700; margin-bottom: 8px">이 작업을 삭제할까요?</div>
+        <div style="font-size: 13px; line-height: 1.7; color: #7d7972; margin-bottom: 20px">되돌릴 수 없습니다.</div>
+        <div style="display: flex; gap: 10px">
+          <button onClick="{{ confirmDeleteDraft }}" style="border: none; background: #b4544a; color: #fff; font: inherit; font-size: 13px; font-weight: 700; padding: 10px 18px; cursor: pointer">삭제</button>
+          <button onClick="{{ closeDeleteDraft }}" style="border: 1px solid #dcd9d3; background: #fff; color: #46433d; font: inherit; font-size: 13px; padding: 9px 16px; cursor: pointer">취소</button>
         </div>
       </div>
     </div>
@@ -942,6 +970,91 @@ const KEY = "magazine-editor:draft:current";
 const API_KEY_STORAGE = "magazine-editor:api-key";
 const API_MODEL_STORAGE = "magazine-editor:api-model";
 const DEFAULT_MODEL = "claude-sonnet-5";
+
+/* multiple people/topics need to be able to have work-in-progress at once
+   without one overwriting another, so drafts are no longer a single fixed
+   slot -- each gets its own id, and a small index in localStorage tracks
+   which ids exist so the input screen can list and resume any of them. */
+const DRAFTS_INDEX_KEY = "magazine-editor:drafts:index";
+const MAX_DRAFTS = 20;
+function draftKey(id) { return "magazine-editor:draft:" + id; }
+function newDraftId() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 8); }
+function getDraftsIndex() {
+  try { return JSON.parse(localStorage.getItem(DRAFTS_INDEX_KEY) || "[]"); } catch (e) { return []; }
+}
+function setDraftsIndex(list) {
+  try { localStorage.setItem(DRAFTS_INDEX_KEY, JSON.stringify(list)); } catch (e) {}
+}
+function upsertDraftIndex(id, at, topic) {
+  const list = getDraftsIndex().filter(function (d) { return d.id !== id; });
+  list.unshift({ id: id, at: at, topic: topic || "" });
+  setDraftsIndex(list.slice(0, MAX_DRAFTS));
+}
+function removeDraftFromIndex(id) {
+  setDraftsIndex(getDraftsIndex().filter(function (d) { return d.id !== id; }));
+}
+
+/* localStorage's ~5-10MB-per-origin quota (shared across every key) is what
+   capped a draft at roughly 4 images before this -- images are by far the
+   biggest thing being saved. IndexedDB has no such small practical ceiling,
+   so images move there (keyed "<draftId>:<slotId>") while the small text/
+   structure/theme stays in localStorage where a synchronous read is handy. */
+const IDB_NAME = "magazine-editor-images";
+const IDB_STORE = "images";
+let _idbOpen = null;
+function openImageDb() {
+  if (_idbOpen) return _idbOpen;
+  _idbOpen = new Promise(function (resolve, reject) {
+    if (!window.indexedDB) { reject(new Error("indexedDB unavailable")); return; }
+    const req = indexedDB.open(IDB_NAME, 1);
+    req.onupgradeneeded = function () { req.result.createObjectStore(IDB_STORE); };
+    req.onsuccess = function () { resolve(req.result); };
+    req.onerror = function () { reject(req.error); };
+  });
+  return _idbOpen;
+}
+function idbSet(key, value) {
+  return openImageDb().then(function (db) {
+    return new Promise(function (resolve, reject) {
+      const tx = db.transaction(IDB_STORE, "readwrite");
+      tx.objectStore(IDB_STORE).put(value, key);
+      tx.oncomplete = function () { resolve(); };
+      tx.onerror = function () { reject(tx.error); };
+    });
+  });
+}
+function idbGet(key) {
+  return openImageDb().then(function (db) {
+    return new Promise(function (resolve, reject) {
+      const tx = db.transaction(IDB_STORE, "readonly");
+      const req = tx.objectStore(IDB_STORE).get(key);
+      req.onsuccess = function () { resolve(req.result || null); };
+      req.onerror = function () { reject(req.error); };
+    });
+  });
+}
+function idbDelete(key) {
+  return openImageDb().then(function (db) {
+    return new Promise(function (resolve, reject) {
+      const tx = db.transaction(IDB_STORE, "readwrite");
+      tx.objectStore(IDB_STORE).delete(key);
+      tx.oncomplete = function () { resolve(); };
+      tx.onerror = function () { reject(tx.error); };
+    });
+  });
+}
+function idbKeysWithPrefix(prefix) {
+  return openImageDb().then(function (db) {
+    return new Promise(function (resolve, reject) {
+      const tx = db.transaction(IDB_STORE, "readonly");
+      const req = tx.objectStore(IDB_STORE).getAllKeys();
+      req.onsuccess = function () {
+        resolve((req.result || []).filter(function (k) { return String(k).indexOf(prefix) === 0; }));
+      };
+      req.onerror = function () { reject(req.error); };
+    });
+  });
+}
 /* API key/model live in their own localStorage slots, separate from KEY (the
    draft), so they never travel through persist()/_docForSave() and can never
    end up inlined into the exported static HTML. */
@@ -1093,40 +1206,74 @@ function stripImages(doc) {
   (copy.btns || []).forEach(function (b) { b.img = null; });
   return copy;
 }
-function imgKeysInStorage() {
+/* loads a draft's images from IndexedDB by prefix-scanning for its keys --
+   NOT by walking the doc's own image slots (imgSlotIds), because the doc
+   handed in here comes straight from localStorage where stripImages()
+   already nulled out every image field before it was saved. Checking
+   doc.thumbnail etc. at this point would always read null and silently
+   skip every image. */
+function loadImagesInto(doc, draftId) {
+  const prefix = draftId + ":";
+  return idbKeysWithPrefix(prefix).then(function (keys) {
+    return Promise.all(keys.map(function (k) {
+      const id = k.slice(prefix.length);
+      return idbGet(k)
+        .then(function (val) { return { id: id, val: val }; })
+        .catch(function () { return null; });
+    }));
+  }).then(function (results) {
+    results.forEach(function (r) {
+      if (!r || !r.val) return;
+      const id = r.id;
+      const val = r.val;
+      if (id === "thumb") doc.thumbnail = val;
+      else if (id === "final") doc.finalImage = val;
+      else if (id.indexOf("sec:") === 0) {
+        const rest = id.slice(4);
+        if (rest.indexOf(":x:") !== -1) {
+          const parts = rest.split(":x:");
+          const s = doc.sections && doc.sections[+parts[0]];
+          if (s) { if (!s.images) s.images = []; s.images[+parts[1]] = val; }
+        } else {
+          const s = doc.sections && doc.sections[+rest];
+          if (s) s.image = val;
+        }
+      }
+      else if (id.indexOf("btn:") === 0) { const b = doc.btns && doc.btns[+id.slice(4)]; if (b) b.img = val; }
+    });
+    return doc;
+  });
+}
+
+/* one-time upgrade path: earlier versions kept exactly one draft under a
+   fixed key with images inlined straight into localStorage. Folding that
+   into the multi-draft index under id "legacy" means nobody's in-progress
+   work disappears the first time this loads after the change. */
+function migrateLegacyDraft() {
+  let raw;
+  try { raw = localStorage.getItem(KEY); } catch (e) { raw = null; }
+  if (!raw) return Promise.resolve();
+  if (getDraftsIndex().some(function (d) { return d.id === "legacy"; })) return Promise.resolve();
+  let d;
+  try { d = JSON.parse(raw); } catch (e) { return Promise.resolve(); }
+  try { localStorage.setItem(draftKey("legacy"), raw); } catch (e) {}
   const prefix = KEY + ":img:";
-  const out = [];
+  const imgKeys = [];
   try {
     for (let i = 0; i < localStorage.length; i++) {
       const k = localStorage.key(i);
-      if (k && k.indexOf(prefix) === 0) out.push(k);
+      if (k && k.indexOf(prefix) === 0) imgKeys.push(k);
     }
   } catch (e) {}
-  return out;
-}
-function loadImagesInto(doc) {
-  const prefix = KEY + ":img:";
-  imgKeysInStorage().forEach(function (k) {
-    const id = k.slice(prefix.length);
+  return Promise.all(imgKeys.map(function (k) {
     let val;
-    try { val = localStorage.getItem(k); } catch (e) { return; }
-    if (!val) return;
-    if (id === "thumb") doc.thumbnail = val;
-    else if (id === "final") doc.finalImage = val;
-    else if (id.indexOf("sec:") === 0) {
-      const rest = id.slice(4);
-      if (rest.indexOf(":x:") !== -1) {
-        const parts = rest.split(":x:");
-        const s = doc.sections && doc.sections[+parts[0]];
-        if (s) { if (!s.images) s.images = []; s.images[+parts[1]] = val; }
-      } else {
-        const s = doc.sections && doc.sections[+rest];
-        if (s) s.image = val;
-      }
-    }
-    else if (id.indexOf("btn:") === 0) { const b = doc.btns && doc.btns[+id.slice(4)]; if (b) b.img = val; }
+    try { val = localStorage.getItem(k); } catch (e) { val = null; }
+    const move = val ? idbSet("legacy:" + k.slice(prefix.length), val).catch(function () {}) : Promise.resolve();
+    return move.then(function () { try { localStorage.removeItem(k); } catch (e) {} });
+  })).then(function () {
+    try { localStorage.removeItem(KEY); } catch (e) {}
+    upsertDraftIndex("legacy", d.at || Date.now(), d.topic || "");
   });
-  return doc;
 }
 
 class Component extends DCLogic {
@@ -1150,7 +1297,8 @@ class Component extends DCLogic {
     downloadOpen: false,
     resetOpen: false,
     zipNote: "",
-    hasDraft: false,
+    drafts: [],
+    deleteDraftId: null,
     emph: null,
     emphPt: "",
     genError: "",
@@ -1179,20 +1327,7 @@ class Component extends DCLogic {
       if (el) el.scrollTop = 0;
     });
     this.setState({ apiKeyInput: getApiKey(), apiModelInput: getApiModel() });
-    try {
-      const raw = localStorage.getItem(KEY);
-      if (raw) {
-        const d = JSON.parse(raw);
-        this.savedDraft = d;
-        const patch = { hasDraft: true, draftAt: d.at || null };
-        if (d.doc) patch.doc = loadImagesInto(d.doc);
-        if (d.theme) patch.theme = d.theme;
-        if (d.presetName) patch.presetName = d.presetName;
-        if (d.custom) patch.custom = d.custom;
-        if (d.topic) patch.topic = d.topic;
-        this.setState(patch);
-      }
-    } catch (e) {}
+    migrateLegacyDraft().then(() => { this.setState({ drafts: getDraftsIndex() }); });
     const initial = this.props.initialTheme;
     if (initial) {
       const p = PRESETS.filter(function (x) { return x.name === initial; })[0];
@@ -1302,6 +1437,12 @@ class Component extends DCLogic {
     return copy;
   };
 
+  /* which draft slot this editing session is writing to -- plain instance
+     field like undoStack, not state, since switching it should never itself
+     trigger a render. Assigned lazily on first persist() of a fresh session,
+     or set explicitly when resuming/deleting a specific saved draft. */
+  draftId = null;
+
   /* plain instance array, not state -- undo history shouldn't trigger its own
      render or get written to localStorage. Every persist() call snapshots the
      state *before* the incoming patch lands, so undo() can pop back to it. */
@@ -1331,36 +1472,66 @@ class Component extends DCLogic {
   persist = (patch) => {
     if (this._skipUndoSnapshot) this._skipUndoSnapshot = false;
     else this._snapshotForUndo();
+    if (!this.draftId) this.draftId = newDraftId();
+    const id = this.draftId;
     this.setState(Object.assign({ saved: false }, patch || {}), () => {
       const doc = this._docForSave();
+      const topic = (this.state.topic || "").trim() || plain(doc.title || "");
       let metaFailed = false;
       try {
-        localStorage.setItem(KEY, JSON.stringify({ at: Date.now(), doc: stripImages(doc), theme: this.state.theme, presetName: this.state.presetName, custom: this.state.custom, topic: this.state.topic }));
+        localStorage.setItem(draftKey(id), JSON.stringify({ at: Date.now(), doc: stripImages(doc), theme: this.state.theme, presetName: this.state.presetName, custom: this.state.custom, topic: this.state.topic }));
+        upsertDraftIndex(id, Date.now(), topic);
       } catch (e) { metaFailed = true; }
 
-      /* each image lives in its own key so one oversized image can't take
-         the rest of the draft down with it; drop keys for images that were
-         removed/replaced so storage doesn't quietly fill up with orphans. */
+      /* each image lives in its own IndexedDB key so one oversized image
+         can't take the rest of the draft down with it; drop keys for images
+         that were removed/replaced so storage doesn't fill up with orphans. */
       const wanted = imgSlotIds(doc);
       const wantedSet = {};
-      wanted.forEach(function (id) { wantedSet[id] = true; });
-      imgKeysInStorage().forEach(function (k) {
-        const id = k.slice((KEY + ":img:").length);
-        if (!wantedSet[id]) { try { localStorage.removeItem(k); } catch (e) {} }
-      });
-      let failedImgs = 0;
-      wanted.forEach(function (id) {
-        try { localStorage.setItem(KEY + ":img:" + id, getImgValue(doc, id)); }
-        catch (e) { failedImgs += 1; }
-      });
+      wanted.forEach(function (slot) { wantedSet[slot] = true; });
+      idbKeysWithPrefix(id + ":").then(function (keys) {
+        keys.forEach(function (k) {
+          const slot = k.slice((id + ":").length);
+          if (!wantedSet[slot]) idbDelete(k).catch(function () {});
+        });
+      }).catch(function () {});
 
-      const saveError = metaFailed
-        ? "저장 실패: 브라우저 저장 공간이 가득 찼습니다. 지금 바로 다운로드해 백업하세요."
-        : failedImgs
-          ? "이미지 " + failedImgs + "개는 저장 공간이 부족해 저장하지 못했습니다. 지금 바로 다운로드해 백업하세요."
-          : "";
-      setTimeout(() => this.setState({ saved: true, savedAt: Date.now(), saveError: saveError }), 420);
+      Promise.all(wanted.map(function (slot) {
+        return idbSet(id + ":" + slot, getImgValue(doc, slot)).then(function () { return true; }).catch(function () { return false; });
+      })).then((results) => {
+        const failedImgs = results.filter(function (ok) { return !ok; }).length;
+        const saveError = metaFailed
+          ? "저장 실패: 브라우저 저장 공간이 가득 찼습니다. 지금 바로 다운로드해 백업하세요."
+          : failedImgs
+            ? "이미지 " + failedImgs + "개는 저장하지 못했습니다. 지금 바로 다운로드해 백업하세요."
+            : "";
+        setTimeout(() => this.setState({ saved: true, savedAt: Date.now(), saveError: saveError, drafts: getDraftsIndex() }), 420);
+      });
     });
+  };
+
+  /* looks up a saved draft by id (from the input-screen list), pulls its
+     images back in from IndexedDB, and switches this session onto it so
+     further edits/persist() calls land on that same slot. */
+  resumeDraftById = (id) => {
+    let raw;
+    try { raw = localStorage.getItem(draftKey(id)); } catch (e) { raw = null; }
+    if (!raw) { removeDraftFromIndex(id); this.setState({ drafts: getDraftsIndex() }); return; }
+    let parsed;
+    try { parsed = JSON.parse(raw); } catch (e) { parsed = null; }
+    if (!parsed) return;
+    this.draftId = id;
+    const finish = (doc) => {
+      const patch = { screen: "editor" };
+      if (doc) patch.doc = doc;
+      if (parsed.theme) patch.theme = parsed.theme;
+      if (parsed.presetName) patch.presetName = parsed.presetName;
+      if (parsed.custom) patch.custom = parsed.custom;
+      if (parsed.topic) patch.topic = parsed.topic;
+      this.setState(patch);
+    };
+    if (parsed.doc) loadImagesInto(parsed.doc, id).then(finish);
+    else finish(null);
   };
 
   setDoc = (fn) => {
@@ -2481,7 +2652,7 @@ JSON 앞뒤에 설명, 인사말, 마크다운, 코드블록 또는 다른 텍�
         const on = st.count === o;
         return { label: o, border: on ? "#26241f" : "#dcd9d3", bg: on ? "#26241f" : "#fff", fg: on ? "#fff" : "#46433d", onPick: function () { self.setState({ count: o }); } };
       }),
-      genNote: st.hasDraft ? "생성하면 저장된 작업물이 덮입니다" : "인트로·아웃트로 각 150~250자, 문단 300~500자",
+      genNote: "인트로·아웃트로 각 150~250자, 문단 300~500자",
       genError: st.genError || "",
       hasGenError: !!st.genError,
       dismissGenError: function () { self.setState({ genError: "" }); },
@@ -2489,20 +2660,18 @@ JSON 앞뒤에 설명, 인사말, 마크다운, 코드블록 또는 다른 텍�
       hasSaveError: !!st.saveError,
       dismissSaveError: function () { self.setState({ saveError: "" }); },
       generate: this.generate,
-      hasDraft: st.hasDraft && st.screen === "input",
-      draftLabel: st.draftAt ? new Date(st.draftAt).toLocaleString("ko-KR") + " 저장" : "마지막 상태에서 이어서",
-      resume: function () {
-        const d = self.savedDraft;
-        const patch = { screen: "editor" };
-        if (d) {
-          if (d.doc) patch.doc = d.doc;
-          if (d.theme) patch.theme = d.theme;
-          if (d.presetName) patch.presetName = d.presetName;
-          if (d.custom) patch.custom = d.custom;
-          if (d.topic) patch.topic = d.topic;
-        }
-        self.setState(patch);
-      },
+      hasDrafts: st.screen === "input" && (st.drafts || []).length > 0,
+      inputShellWidth: st.screen === "input" && (st.drafts || []).length > 0 ? "928px" : "620px",
+      draftCount: (st.drafts || []).length,
+      draftItems: (st.drafts || []).map(function (d) {
+        return {
+          id: d.id,
+          label: d.topic || "(제목 없음)",
+          when: d.at ? new Date(d.at).toLocaleString("ko-KR") + " 저장" : "",
+          onResume: function () { self.resumeDraftById(d.id); },
+          onDelete: function () { self.setState({ deleteDraftId: d.id }); }
+        };
+      }),
 
       c: t,
       titleColor: t.title || t.point,
@@ -2781,13 +2950,30 @@ JSON 앞뒤에 설명, 인사말, 마크다운, 코드블록 또는 다른 텍�
       reset: function () { self.setState({ resetOpen: true }); },
       closeReset: function () { self.setState({ resetOpen: false }); },
       confirmReset: function () {
-        try { localStorage.removeItem(KEY); } catch (e) {}
-        imgKeysInStorage().forEach(function (k) { try { localStorage.removeItem(k); } catch (e) {} });
+        /* non-destructive: the current draft is already saved under its own
+           id, so this just switches the session onto a fresh blank one --
+           the old work stays in the list below to resume later. */
+        self.draftId = null;
         self.setState({
-          resetOpen: false, screen: "input", hasDraft: false, saveError: "",
+          resetOpen: false, screen: "input", saveError: "",
           doc: JSON.parse(JSON.stringify(SAMPLE)),
-          topic: "", instr: "", links: [], hasRef: false, refText: "", count: "자동"
+          topic: "", instr: "", links: [], hasRef: false, refText: "", count: "자동",
+          drafts: getDraftsIndex()
         });
+      },
+
+      deleteDraftOpen: !!st.deleteDraftId,
+      closeDeleteDraft: function () { self.setState({ deleteDraftId: null }); },
+      confirmDeleteDraft: function () {
+        const id = st.deleteDraftId;
+        if (!id) return;
+        removeDraftFromIndex(id);
+        try { localStorage.removeItem(draftKey(id)); } catch (e) {}
+        idbKeysWithPrefix(id + ":").then(function (keys) {
+          keys.forEach(function (k) { idbDelete(k).catch(function () {}); });
+        }).catch(function () {});
+        if (self.draftId === id) self.draftId = null;
+        self.setState({ deleteDraftId: null, drafts: getDraftsIndex() });
       },
 
       apiKeyOpen: st.apiKeyOpen,
